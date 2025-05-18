@@ -1,47 +1,30 @@
 <!DOCTYPE html>
-<!--
-Version: V2.4.2: Login box placed below carousel, carousel always visible
--->
+<!-- Version: V2.4.5 - Layout and card rendering fixes -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation 3-Column Carousel (V2.4.2)</title>
+  <title>Home Automation 3-Column Carousel (V2.4.5)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="userPanel"></div>
-
   <h1>Home Automation</h1>
   <p>Use arrows, dots, or swipe to navigate</p>
-
-  <!-- Carousel -->
   <div class="carousel-3col" id="carousel">
     <button id="prevBtn" aria-label="Prev">&#8249;</button>
-    <div class="cards" id="cards">
-      <!-- Cards will be injected here via JS -->
-    </div>
+    <div class="cards" id="cards"></div>
     <button id="nextBtn" aria-label="Next">&#8250;</button>
   </div>
-
-  <!-- Dots -->
   <div class="dots" id="dots"></div>
-
-  <!-- Login -->
   <div id="loginBox" class="login-box">
     <h2>🔒 Access Required</h2>
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
     <button id="loginBtn">Login</button>
   </div>
-
-  <!-- Warning -->
   <div id="warning" class="warning"></div>
-
-  <!-- Theme toggle -->
   <button id="themeToggle" aria-label="Toggle theme">🌙</button>
-
-  <!-- Script -->
   <script src="script.js"></script>
 </body>
 </html>

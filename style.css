@@ -1,116 +1,131 @@
-// V2.4.5: Fixed card generation and rendering in carousel
+/* V2.4.5 - Full layout styling with cards, login box, carousel, theme, shake */
 
-const cardsData = [
-  { icon: '🎵', title: 'Audio Devices', key: 'audio' },
-  { icon: '💡', title: 'Lighting', key: 'lighting' },
-  { icon: '🌡️', title: 'Climate', key: 'climate' },
-  { icon: '🔒', title: 'Security', key: 'security' },
-  { icon: '⚙️', title: 'Settings', key: 'settings' }
-];
-
-let currentIndex = 0;
-let loggedInUser = localStorage.getItem("username") || null;
-const isAdmin = loggedInUser === "admin";
-
-const userPanel = document.getElementById("userPanel");
-const loginBox = document.getElementById("loginBox");
-const cardsEl = document.getElementById("cards");
-const dotsEl = document.getElementById("dots");
-
-function showUserPanel() {
-  if (loggedInUser) {
-    userPanel.innerHTML = `Welcome: ${loggedInUser} <button onclick="logout()">Logout</button>`;
-    loginBox.style.display = "none";
-  }
+body {
+  font-family: Arial, sans-serif;
+  background: #000;
+  color: #EEE;
+  padding: 2rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-function logout() {
-  localStorage.removeItem("username");
-  location.href = "index.html";
+h1 { margin-bottom: 0.5rem; }
+p { margin-bottom: 2rem; }
+
+.login-box {
+  background: #111;
+  padding: 1rem;
+  border: 2px solid #F5A623;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 2rem;
 }
 
-function login() {
-  const u = document.getElementById("username").value.trim();
-  const p = document.getElementById("password").value.trim();
-  if ((u === "user1" && p === "user1") || (u === "admin" && p === "admin")) {
-    localStorage.setItem("username", u);
-    location.href = "index.html";
-  } else {
-    alert("Invalid login");
-  }
+.login-box input {
+  padding: 0.4rem;
+  border: none;
+  border-radius: 4px;
 }
 
-function createCarousel() {
-  cardsEl.innerHTML = ''; // clear existing
-  dotsEl.innerHTML = '';
-
-  cardsData.forEach((data, i) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.dataset.key = data.key;
-    card.innerHTML = `<div class="card-icon">${data.icon}</div><div class="card-title">${data.title}</div>`;
-    card.addEventListener("click", () => handleCardClick(data.key));
-    cardsEl.appendChild(card);
-
-    const dot = document.createElement("div");
-    dot.className = "dot";
-    dot.addEventListener("click", () => {
-      currentIndex = i;
-      updateCarousel();
-    });
-    dotsEl.appendChild(dot);
-  });
-  updateCarousel();
+.login-box button {
+  padding: 0.4rem;
+  background: #F5A623;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-function updateCarousel() {
-  const cards = cardsEl.children;
-  const left = (currentIndex - 1 + cardsData.length) % cardsData.length;
-  const right = (currentIndex + 1) % cardsData.length;
-
-  Array.from(cards).forEach((card, i) => {
-    card.classList.remove("active");
-    if (i === currentIndex) card.classList.add("active");
-    card.style.order = i === left ? 1 : i === currentIndex ? 2 : i === right ? 3 : 4;
-  });
-
-  Array.from(dotsEl.children).forEach((dot, i) => dot.classList.toggle("active", i === currentIndex));
+.carousel-3col {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-function handleCardClick(key) {
-  if (!loggedInUser) {
-    cardsEl.classList.add("shake");
-    setTimeout(() => cardsEl.classList.remove("shake"), 400);
-    alert("USER login is needed");
-    return;
-  }
-  if (loggedInUser !== "admin" && key === "settings") {
-    cardsEl.classList.add("shake");
-    setTimeout(() => cardsEl.classList.remove("shake"), 400);
-    alert("Admin password is needed");
-    return;
-  }
-  window.location.href = `pages/${key}.html`;
+.cards {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  width: 600px;
+  height: 180px;
+  perspective: 800px;
 }
 
-// Theme toggle
-const themeToggle = document.getElementById("themeToggle");
-if (themeToggle) {
-  themeToggle.onclick = () => {
-    document.body.classList.toggle("light-theme");
-    const newTheme = document.body.classList.contains("light-theme") ? "light" : "dark";
-    localStorage.setItem("theme", newTheme);
-    themeToggle.textContent = newTheme === "light" ? "🌞" : "🌙";
-  };
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "light") {
-    document.body.classList.add("light-theme");
-    themeToggle.textContent = "🌞";
-  }
+.card {
+  background: #1a1a1a;
+  border-radius: 1rem;
+  padding: 1rem;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transform: scale(0.9);
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 1px solid #333;
 }
 
-const loginBtn = document.getElementById("loginBtn");
-if (loginBtn) loginBtn.onclick = login;
+.card-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
 
-createCarousel();
-showUserPanel();
+.card-title {
+  font-size: 1rem;
+  text-align: center;
+}
+
+.card.active {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px #F5A623;
+}
+
+button#themeToggle {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 0.5rem;
+  color: #FFF;
+  cursor: pointer;
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: #555;
+  border-radius: 50%;
+  margin: 0 5px;
+}
+.dot.active {
+  background: #F5A623;
+}
+
+.warning {
+  color: red;
+  margin-top: 1rem;
+  font-weight: bold;
+  display: none;
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
