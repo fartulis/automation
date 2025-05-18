@@ -1,29 +1,34 @@
 <!DOCTYPE html>
-<!-- Version: V2.4.5 - Layout and card rendering fixes -->
+<!-- Version: V2.5.2 - Title fix, theme toggle working, cards clickable -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation 3-Column Carousel (V2.4.5)</title>
+  <title>Home Automation 3D Carousel (V2.5.2)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="userPanel"></div>
-  <h1>Home Automation</h1>
-  <p>Use arrows, dots, or swipe to navigate</p>
-  <div class="carousel-3col" id="carousel">
-    <button id="prevBtn" aria-label="Prev">&#8249;</button>
-    <div class="cards" id="cards"></div>
-    <button id="nextBtn" aria-label="Next">&#8250;</button>
+  <div id="userPanel" class="user-panel"></div>
+
+  <header>
+    <h1>Home Automation</h1>
+    <p>Use the arrows or ←/→ keys to spin the wheel</p>
+  </header>
+
+  <div class="carousel-container">
+    <button class="nav-button nav-prev" id="prevBtn" aria-label="Previous">&#8249;</button>
+    <div class="carousel" id="carousel"></div>
+    <button class="nav-button nav-next" id="nextBtn" aria-label="Next">&#8250;</button>
   </div>
   <div class="dots" id="dots"></div>
+
   <div id="loginBox" class="login-box">
     <h2>🔒 Access Required</h2>
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
     <button id="loginBtn">Login</button>
   </div>
-  <div id="warning" class="warning"></div>
+
   <button id="themeToggle" aria-label="Toggle theme">🌙</button>
   <script src="script.js"></script>
 </body>
