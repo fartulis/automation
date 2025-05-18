@@ -1,9 +1,9 @@
 const data = [
-  { icon: '🎵', title: 'Audio Devices' },
-  { icon: '💡', title: 'Lighting' },
-  { icon: '🌡️', title: 'Climate' },
-  { icon: '🔒', title: 'Security' },
-  { icon: '⚙️', title: 'Settings' }
+  { icon: '🎵', title: 'Audio Devices', key: 'audio' },
+  { icon: '💡', title: 'Lighting', key: 'lighting' },
+  { icon: '🌡️', title: 'Climate', key: 'climate' },
+  { icon: '🔒', title: 'Security', key: 'security' },
+  { icon: '⚙️', title: 'Settings', key: 'settings' }
 ];
 const CARDS = data.length;
 const ANGLE = 360 / CARDS;
@@ -11,13 +11,12 @@ let index = 0;
 const carousel = document.getElementById('carousel');
 const dots = document.getElementById('dots');
 
-// Add login info
 function displayUserPanel() {
   const panel = document.getElementById("userPanel");
   const username = localStorage.getItem("username") || "";
   const loginTime = localStorage.getItem("loginTime") || "-";
   if (username) {
-    panel.innerHTML = `Welcome: ${username}<br><small>Last login: ${loginTime}</small> <br><button onclick="logout()">Logout</button>`;
+    panel.innerHTML = `Welcome: ${username}<br><small>Last login: ${loginTime}</small><br><button onclick="logout()">Logout</button>`;
     document.getElementById("loginBox").style.display = "none";
   }
 }

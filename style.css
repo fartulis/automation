@@ -1,4 +1,4 @@
-/* V2.5 - Full 3D Carousel, Top-Right Login Panel, Theme Support */
+/* V2.5.1 - Layout tweaks, theme fix, overflow fix, clickable cards */
 
 :root {
   --card-width: 160px;
@@ -22,10 +22,10 @@ body {
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
-h1 { font-size: 2.2rem; margin-bottom: 0.25rem; }
+h1 { font-size: 2.2rem; margin: 0 0 0.25rem 0; }
 p { opacity: 0.75; margin-bottom: 2rem; }
 
 .user-panel {
@@ -44,7 +44,7 @@ p { opacity: 0.75; margin-bottom: 2rem; }
   height: var(--card-height);
   perspective: 1200px;
   overflow: visible;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .carousel {
@@ -70,8 +70,14 @@ p { opacity: 0.75; margin-bottom: 2rem; }
   transform-style: preserve-3d;
   backface-visibility: hidden;
   opacity: 0.5;
+  cursor: default;
 }
-
+.card.active {
+  opacity: 1;
+  box-shadow: 0 0 0 4px rgba(245,166,35,0.5);
+  z-index: 3;
+  cursor: pointer;
+}
 .card-icon {
   font-size: 2rem;
   margin-bottom: 0.5rem;
@@ -79,11 +85,6 @@ p { opacity: 0.75; margin-bottom: 2rem; }
 .card-title {
   font-size: 1rem;
   text-align: center;
-}
-.card.active {
-  opacity: 1;
-  box-shadow: 0 0 0 4px rgba(245,166,35,0.5);
-  z-index: 3;
 }
 
 .nav-button {
@@ -98,14 +99,14 @@ p { opacity: 0.75; margin-bottom: 2rem; }
   padding: 0.4rem 0.7rem;
   z-index: 5;
 }
-.nav-prev { left: -3rem; }
-.nav-next { right: -3rem; }
+.nav-prev { left: -5rem; }
+.nav-next { right: -5rem; }
 
 .dots {
   display: flex;
   gap: 0.5rem;
   justify-content: center;
-  margin-top: 0.5rem;
+  margin: 1rem 0;
 }
 .dot {
   width: 10px;
