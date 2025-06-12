@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<!-- carousel.html -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home Automation Carousel</title>
+  <style>
+    :root {
+      --bg-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent: #4CAF50;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    p {
+      margin: 0.5rem 0;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .carousel-container {
+      position: relative;
+      perspective: 1000px;
+      width: 100%;
+      max-width: 800px;
+      height: 60vh;
+      margin: 2rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+      width: 200px;
+      height: 300px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      cursor: pointer;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--text-color);
+      opacity: 0.8;
+    }
+
+    .card.active {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+    }
+
+    .dots {
+      position: absolute;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .dot.active {
+      background: var(--accent);
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--text-color);
+      padding: 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      font-size: 1.5rem;
+    }
+
+    .nav-prev {
+      left: -2rem;
+    }
+
+    .nav-next {
+      right: -2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Home Automation</h1>
+    <p>Use the arrows or ←/→ keys to spin the wheel</p>
+  </header>
+
+  <div class="carousel-container">
+    <div class="carousel"></div>
+    <div class="dots"></div>
+    <button class="nav-button nav-prev">←</button>
+    <button class="nav-button nav-next">→</button>
+  </div>
+
+  <script>
+    // Initialize DOM elements
+    const carousel = document.querySelector('.carousel');
+    const dotsContainer = document.querySelector('.dots');
+    const prevBtn = document.querySelector('.nav-prev');
+    const nextBtn = document.querySelector('.nav-next');
+
+    // Define carousel data
+    const CARDS = 8;
+    const ANGLE = 360 / CARDS;
+    const data = [
+      { icon: '🎵', title: 'Audio', key: 'audio' },
+      { icon: '💡', title: 'Lighting', key: 'lighting' },
+      { icon: '🌡️', title: 'Climate', key: 'climate' },
+      { icon: '🔒', title: 'Security', key: 'security' },
+      { icon: '📺', title: 'Entertainment', key: 'entertainment' },
+      { icon: '🔋', title: 'Energy', key: 'energy' },
+      { icon: '💧', title: 'Water', key: 'water' },
+      { icon: '⚙️', title: 'Settings', key: 'settings' }
+    ];
+
+    let index = 0;
+
+    // Create cards
+    data.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-title">${item.title}</div>
+      `;
+      carousel.appendChild(card);
+
+      // Create navigation dots
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      dot.addEventListener('click', () => {
+        index = i;
+        render();
+      });
+      dotsContainer.appendChild(dot);
+    });
+
+    // Render function
+    function render() {
+      const cards = carousel.children;
+      Array.from(cards).forEach((card, i) => {
+        let offset = i - index;
+        if (offset > CARDS / 2) offset -= CARDS;
+        if (offset < -CARDS / 2) offset += CARDS;
+
+        const deg = offset * ANGLE;
+        const z = Math.abs(offset) <= 1 ? 340 : (Math.abs(offset) <= 2 ? 280 : 220);
+        const scale = Math.abs(offset) <= 1 ? 1.1 : (Math.abs(offset) <= 2 ? 0.9 : 0.7);
+        const opacity = Math.abs(offset) <= 2 ? 1 : 0.8;
+
+        card.style.transform = `translate(-50%, -50%) rotateY(${deg}deg) translateZ(${z}px) scale(${scale})`;
+        card.style.opacity = opacity;
+        card.classList.toggle('active', offset === 0);
+
+        if (offset === 0) {
+          card.onclick = () => {
+            alert(`Selected: ${data[index].title}`);
+          };
+        }
+      });
+
+      // Update dots
+      const dots = dotsContainer.children;
+      Array.from(dots).forEach((dot, i) => dot.classList.toggle('active', i === index));
+    }
+
+    // Navigation handlers
+    prevBtn.onclick = () => {
+      index = (index - 1 + CARDS) % CARDS;
+      render();
+    };
+
+    nextBtn.onclick = () => {
+      index = (index + 1) % CARDS;
+      render();
+    };
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevBtn.click();
+      if (e.key === 'ArrowRight') nextBtn.click();
+    });
+
+    // Touch support
+    let touchStartX = 0;
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    });
+
+    carousel.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          nextBtn.click();
+        } else {
+          prevBtn.click();
+        }
+      }
+    });
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>

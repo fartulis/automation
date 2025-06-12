@@ -27,6 +27,11 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       transition: background-color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .dark-theme {
@@ -82,32 +87,20 @@
     }
 
     .carousel-container {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      position: relative;
       perspective: 1000px;
-      width: 80%;
+      width: 100%;
+      max-width: 800px;
       height: 60vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1;
-      visibility: hidden;
-      opacity: 0;
-      transition: visibility 0.3s, opacity 0.3s;
-    }
-
-    .carousel-container.visible {
-      visibility: visible;
-      opacity: 1;
     }
 
     .carousel {
       position: relative;
       width: 100%;
       height: 100%;
-      transform-style: preserve-3d;
     }
 
     .card {
@@ -115,8 +108,8 @@
       top: 50%;
       left: 50%;
       transform-style: preserve-3d;
-      width: 80%;
-      height: 80%;
+      width: 200px;
+      height: 300px;
       background: rgba(255,255,255,0.1);
       border-radius: 15px;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
@@ -128,13 +121,17 @@
       align-items: center;
       text-align: center;
       color: var(--text-color);
+      opacity: 0.8;
     }
 
     .card.active {
-      background: rgba(255,255,255,0.2);
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.1);
     }
 
     .card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
       font-size: 3rem;
       margin-bottom: 1rem;
     }
@@ -311,22 +308,13 @@
 
     #logoutBtn {
       display: none;
-    }
   </style>
 </head>
 <body>
   <header>
-    <h1 style="margin: 0;">Home Automation</h1>
-    <p style="margin: 0;">Use the arrows or ←/→ keys to spin the wheel</p>
+    <h1>Home Automation</h1>
+    <p>Use the arrows or ←/→ keys to spin the wheel</p>
   </header>
-  
-  <!-- Login Info Panel -->
-  <div id="loginInfoPanel" style="position: fixed; top: 1rem; right: 1rem; background: rgba(0,0,0,0.7); padding: 1rem; border-radius: 6px; z-index: 1000; color: var(--text-color); display: none;">
-    <div id="welcomeMessage" style="font-size: 1.2rem; margin-bottom: 0.5rem;"></div>
-    <div id="loginTime" style="font-size: 0.9rem; margin-bottom: 0.5rem;"></div>
-    <div id="loginIP" style="font-size: 0.9rem; margin-bottom: 0.5rem;"></div>
-    <button id="logoutBtn" style="background: var(--accent); color: var(--text-color); border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2); width: 100%; margin-top: 0.5rem;">Logout</button>
-  </div>
 
   <div class="carousel-container">
     <button class="nav-button nav-prev" id="prevBtn" aria-label="Previous">&#8249;</button>
@@ -349,165 +337,129 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const pages = {
-        audio: `<div class="page-content">
-          <h1>Audio Devices</h1>
-          <p>Control your home audio system here.</p>
-          <div class="controls">
-            <button>Play</button>
-            <button>Pause</button>
-            <button>Stop</button>
-          </div>
-        </div>`,
-        lighting: `<div class="page-content">
-          <h1>Lighting</h1>
-          <p>Adjust lights and scenes here.</p>
-          <div class="controls">
-            <button>On</button>
-            <button>Off</button>
-            <button>Dim</button>
-          </div>
-        </div>`,
-        climate: `<div class="page-content">
-          <h1>Climate</h1>
-          <p>Manage temperature and HVAC here.</p>
-          <div class="controls">
-            <button>Heat</button>
-            <button>Cool</button>
-            <button>Fan</button>
-          </div>
-        </div>`,
-        security: `<div class="page-content">
-          <h1>Security</h1>
-          <p>Monitor and control security systems here.</p>
-          <div class="controls">
-            <button>Arm</button>
-            <button>Disarm</button>
-            <button>Check Status</button>
-          </div>
-        </div>`,
-        settings: `<div class="page-content">
-          <h1>Settings</h1>
-          <p>Configure system preferences here.</p>
-          <div class="controls">
-            <button>General</button>
-            <button>Security</button>
-            <button>Network</button>
-          </div>
-        </div>`,
-        entertainment: `<div class="page-content">
-          <h1>Entertainment</h1>
-          <p>Control media devices here.</p>
-          <div class="controls">
-            <button>TV</button>
-            <button>Streaming</button>
-            <button>Games</button>
-          </div>
-        </div>`,
-        energy: `<div class="page-content">
-          <h1>Energy</h1>
-          <p>Monitor power usage here.</p>
-          <div class="controls">
-            <button>Usage</button>
-            <button>Cost</button>
-            <button>History</button>
-          </div>
-        </div>`,
-        water: `<div class="page-content">
-          <h1>Water</h1>
-          <p>Control water systems here.</p>
-          <div class="controls">
-            <button>On</button>
-            <button>Off</button>
-            <button>Monitor</button>
-          </div>
-        </div>`,
-        devices: `<div class="page-content">
-          <h1>Devices</h1>
-          <p>Manage connected devices here.</p>
-          <div class="controls">
-            <button>Connected</button>
-            <button>Disconnected</button>
-            <button>Update</button>
-          </div>
-        </div>`,
-        home: `<div class="page-content">
-          <h1>Home</h1>
-          <p>Quick access to home controls.</p>
-          <div class="controls">
-            <button>Quick Actions</button>
-            <button>Scenes</button>
-            <button>Favorites</button>
-          </div>
-        </div>`
-      };
+    // Initialize DOM elements
+    const carousel = document.querySelector('.carousel');
+    const dotsContainer = document.querySelector('.dots');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-      const data = Object.entries(pages).map(([key, content]) => ({
-        icon: key === 'settings' ? '⚙️' : key === 'audio' ? '🎵' : key === 'lighting' ? '💡' : key === 'climate' ? '🌡️' : key === 'security' ? '🔒' : key === 'entertainment' ? '📺' : key === 'energy' ? '🔋' : key === 'water' ? '💧' : key === 'devices' ? '📱' : '🏠',
-        title: key.charAt(0).toUpperCase() + key.slice(1),
-        key,
-        description: `Control ${key} here.`
-      }));
+    // Define carousel data
+    const CARDS = 8;
+    const ANGLE = 360 / CARDS;
+    const data = [
+      { icon: '🎵', title: 'Audio', key: 'audio' },
+      { icon: '💡', title: 'Lighting', key: 'lighting' },
+      { icon: '🌡️', title: 'Climate', key: 'climate' },
+      { icon: '🔒', title: 'Security', key: 'security' },
+      { icon: '📺', title: 'Entertainment', key: 'entertainment' },
+      { icon: '🔋', title: 'Energy', key: 'energy' },
+      { icon: '💧', title: 'Water', key: 'water' },
+      { icon: '⚙️', title: 'Settings', key: 'settings' }
+    ];
 
-      // Initialize constants
-      const CARDS = data.length;
-      const ANGLE = 360 / CARDS;
-      let index = 0;
+    let index = 0;
 
-      // Get DOM elements
-      const elements = {
-        carousel: document.querySelector('.carousel'),
-        dotsContainer: document.querySelector('.dots'),
-        prevBtn: document.getElementById('prevBtn'),
-        nextBtn: document.getElementById('nextBtn'),
-        loginBtn: document.getElementById('loginBtn'),
-        logoutBtn: document.getElementById('logoutBtn'),
-        loginBox: document.getElementById('loginBox'),
-        loginInfoPanel: document.getElementById('loginInfoPanel'),
-        welcomeMessage: document.getElementById('welcomeMessage'),
-        loginTime: document.getElementById('loginTime'),
-        loginIP: document.getElementById('loginIP'),
-        themeToggle: document.getElementById('themeToggle'),
-        loadingOverlay: document.querySelector('.loading-overlay')
-      };
+    // Create cards
+    data.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-title">${item.title}</div>
+      `;
+      carousel.appendChild(card);
 
-      // Initialize theme
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      if (savedTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-        elements.themeToggle.textContent = '☀️';
-      } else {
-        document.body.classList.remove('dark-theme');
-        elements.themeToggle.textContent = '🌙';
-      }
+      // Create navigation dots
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      dot.addEventListener('click', () => {
+        index = i;
+        render();
+      });
+      dotsContainer.appendChild(dot);
+    });
 
-      // Theme toggle
-      elements.themeToggle.onclick = () => {
-        const isDark = document.body.classList.toggle('dark-theme');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        elements.themeToggle.textContent = isDark ? '☀️' : '🌙';
-      };
+    // Render function
+    function render() {
+      const cards = carousel.children;
+      Array.from(cards).forEach((card, i) => {
+        let offset = i - index;
+        if (offset > CARDS / 2) offset -= CARDS;
+        if (offset < -CARDS / 2) offset += CARDS;
 
-      // Initialize carousel
+        const deg = offset * ANGLE;
+        const z = Math.abs(offset) <= 1 ? 340 : (Math.abs(offset) <= 2 ? 280 : 220);
+        const scale = Math.abs(offset) <= 1 ? 1.1 : (Math.abs(offset) <= 2 ? 0.9 : 0.7);
+        const opacity = Math.abs(offset) <= 2 ? 1 : 0.8;
+
+        card.style.transform = `translate(-50%, -50%) rotateY(${deg}deg) translateZ(${z}px) scale(${scale})`;
+        card.style.opacity = opacity;
+        card.classList.toggle('active', offset === 0);
+
+        if (offset === 0) {
+          card.onclick = () => {
+            alert(`Selected: ${data[index].title}`);
+          };
+        }
+      });
+
+      // Update dots
+      const dots = dotsContainer.children;
+      Array.from(dots).forEach((dot, i) => dot.classList.toggle('active', i === index));
+    }
+
+    // Navigation handlers
+    prevBtn.onclick = () => {
+      index = (index - 1 + CARDS) % CARDS;
+      render();
+    };
+
+    nextBtn.onclick = () => {
+      index = (index + 1) % CARDS;
+      render();
+    };
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevBtn.click();
+      if (e.key === 'ArrowRight') nextBtn.click();
+    });
+
+    // Touch support
+    let touchStartX = 0;
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].clientX;
+    });
+
+    carousel.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].clientX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          nextBtn.click();
       const cards = data.map((item, i) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = `<div class="card-icon">${item.icon}</div><div class="card-title">${item.title}</div>`;
-        elements.carousel.appendChild(card);
+        card.innerHTML = `
+          <div class="card-icon">${item.icon}</div>
+          <div class="card-title">${item.title}</div>
+        `;
+        carousel.appendChild(card);
 
+        // Create navigation dots
         const dot = document.createElement('div');
         dot.className = 'dot';
         dot.addEventListener('click', () => {
           index = i;
           render();
         });
-        elements.dotsContainer.appendChild(dot);
-        return card;
+        dotsContainer.appendChild(dot);
       });
 
+      // Render function
       function render() {
-        cards.forEach((card, i) => {
+        const cards = carousel.children;
+        Array.from(cards).forEach((card, i) => {
           let offset = i - index;
           if (offset > CARDS / 2) offset -= CARDS;
           if (offset < -CARDS / 2) offset += CARDS;
@@ -522,55 +474,8 @@
           card.classList.toggle('active', offset === 0);
 
           if (offset === 0) {
-            card.onclick = async () => {
-              const loadingOverlay = document.querySelector('.loading-overlay');
-              loadingOverlay.style.display = 'flex';
-              try {
-                const username = localStorage.getItem('username');
-                if (!username) {
-                  document.getElementById('loginBox').style.display = 'flex';
-                  return;
-                }
-
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                // Navigate to page
-                const page = data[index].key;
-                window.location.hash = `#${page}`;
-                
-                // Create page container with inline content
-                const pageContainer = document.createElement('div');
-                pageContainer.id = 'pageContainer';
-                pageContainer.innerHTML = pages[page];
-                
-                // Add styles for page content
-                pageContainer.style.cssText = `
-                  position: absolute;
-                  top: 0;
-                  left: 0;
-                  width: 100%;
-                  height: 100%;
-                  background: var(--bg-color);
-                  color: var(--text-color);
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  justify-content: center;
-                `;
-                
-                // Add back button
-                const backButton = document.createElement('button');
-                backButton.className = 'back-button';
-                backButton.textContent = '← Back';
-                backButton.onclick = () => {
-                  pageContainer.remove();
-                  document.querySelector('.carousel-container').style.display = '';
-                  document.querySelector('.dots').style.display = '';
-                  elements.themeToggle.style.display = '';
-                  window.location.hash = '';
-                };
-                pageContainer.insertBefore(backButton, pageContainer.firstChild);
+            card.onclick = () => {
+              alert(`Selected: ${data[index].title}`);
 
                 document.body.appendChild(pageContainer);
                 document.querySelector('.carousel-container').style.display = 'none';
