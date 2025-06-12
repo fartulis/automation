@@ -515,8 +515,9 @@
           return;
         }
 
-        // Navigate to category page
-        window.location.href = `/pages/${category}.html`;
+        // Navigate to category page (GitHub Pages compatible)
+        const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/';
+        window.location.href = `${baseUrl}${category}.html`;
       });
     });
 
@@ -524,7 +525,8 @@
     const initializePage = () => {
       const username = localStorage.getItem('username');
       if (!username) {
-        window.location.href = '/index.html';
+        const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/') + '/';
+        window.location.href = `${baseUrl}index.html`;
         return;
       }
 
