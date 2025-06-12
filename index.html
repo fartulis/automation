@@ -326,6 +326,16 @@
     .hidden {
       display: none;
     }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
   </style>
 
   <style>
@@ -436,34 +446,66 @@
       e.preventDefault();
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
+      const isAdmin = username === 'admin'; // Default admin check, can be made more secure
 
-      // TODO: Add actual authentication logic here
-      if (username && password) {
-        // Hide login window
-        loginWindow.style.display = 'none';
-
-        // Show login status
-        loginStatus.classList.remove('hidden');
-
-        // Update welcome message
-        welcomeMessage.textContent = `Welcome, ${username}!`;
-
-        // Get and store IP address
-        fetch('https://api.ipify.org?format=json')
-          .then(response => response.json())
-          .then(data => {
-            ipAddress.textContent = `IP: ${data.ip}`;
-            localStorage.setItem('lastIp', data.ip);
-          });
-
-        // Store login time
-        const loginTime = new Date().toLocaleString();
-        lastLogin.textContent = `Last login: ${loginTime}`;
-        localStorage.setItem('lastLogin', loginTime);
-
-        // Store username
-        localStorage.setItem('username', username);
+      // Simple validation - in real app this would be server-side
+      if (!username || !password) {
+        loginWindow.classList.add('shake');
+        setTimeout(() => loginWindow.classList.remove('shake'), 500);
+        return;
       }
+
+      // Store user data
+      localStorage.setItem('username', username);
+      localStorage.setItem('isAdmin', isAdmin);
+
+      // Hide login window
+      loginWindow.style.display = 'none';
+
+      // Show login status
+      loginStatus.classList.remove('hidden');
+
+      // Update welcome message
+      welcomeMessage.textContent = `Welcome, ${username}!`;
+
+      // Get and store IP address
+      fetch('https://api.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+          ipAddress.textContent = `IP: ${data.ip}`;
+          localStorage.setItem('lastIp', data.ip);
+        });
+
+      // Store login time
+      const loginTime = new Date().toLocaleString();
+      lastLogin.textContent = `Last login: ${loginTime}`;
+      localStorage.setItem('lastLogin', loginTime);
+    });
+
+    // Check if user is logged in
+    const savedUsername = localStorage.getItem('username');
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+    if (savedUsername) {
+      loginWindow.style.display = 'none';
+      loginStatus.classList.remove('hidden');
+      welcomeMessage.textContent = `Welcome, ${savedUsername}!`;
+    }
+
+    // Carousel card click handler
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+      card.addEventListener('click', () => {
+        const category = data[index].key;
+        
+        if (category === 'settings' && !isAdmin) {
+          alert('Access to Settings is restricted to administrators only.');
+          return;
+        }
+
+        // TODO: Add actual category page navigation logic
+        alert(`Selected: ${data[index].title}`);
+      });
     });
 
     // Add logout button
