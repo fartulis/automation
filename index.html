@@ -164,16 +164,40 @@
       z-index: 1000;
     }
 
-    .dark-theme {
+    /* Theme styles */
+    body.dark-theme {
       --bg-color: #1a1a1a;
       --text-color: #ffffff;
       --accent: #4CAF50;
     }
 
-    .light-theme {
+    body.light-theme {
       --bg-color: #ffffff;
       --text-color: #000000;
       --accent: #4CAF50;
+    }
+
+    body.light-theme {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    body.light-theme .card {
+      background: rgba(0,0,0,0.1);
+      color: var(--text-color);
+    }
+
+    body.light-theme .dot {
+      background: rgba(0,0,0,0.3);
+    }
+
+    body.light-theme .dot.active {
+      background: var(--accent);
+    }
+
+    body.light-theme .nav-button {
+      background: rgba(0,0,0,0.1);
+      color: var(--text-color);
     }
   </style>
 </head>
