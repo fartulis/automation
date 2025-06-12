@@ -1,18 +1,10 @@
 <!DOCTYPE html>
-<!-- index.html_V2.5.2 -->
-<!-- Version: V2.5.2 - Inline styles and scripts -->
-<!-- Version: V2.5.1 - Fixed carousel 3D effect and navigation -->
-<!-- Version: V2.5.0 - Added touch support and improved mobile responsiveness -->
-<!-- Version: V2.4.0 - Added theme toggle and improved UI -->
-<!-- Version: V2.3.0 - Added login/logout system -->
-<!-- Version: V2.2.0 - Added page navigation -->
-<!-- Version: V2.1.0 - Added carousel with 3D effect -->
-<!-- Version: V2.0.0 - Initial version -->
+<!-- Version: V3.0.0 - Clean Carousel Implementation -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Home Automation 3D Carousel (V2.5.2)</title>
+  <title>Home Automation 3D Carousel</title>
   <style>
     :root {
       --bg-color: #1a1a1a;
@@ -26,7 +18,6 @@
       font-family: Arial, sans-serif;
       background-color: var(--bg-color);
       color: var(--text-color);
-      transition: background-color 0.3s ease;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -34,56 +25,18 @@
       justify-content: center;
     }
 
-    .dark-theme {
-      --bg-color: #1a1a1a;
-      --text-color: #ffffff;
-      --accent: #4CAF50;
-    }
-
-    .light-theme {
-      --bg-color: #ffffff;
-      --text-color: #000000;
-      --accent: #4CAF50;
-    }
-
-    .login-box {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--bg-color);
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      display: none;
-      z-index: 1000;
-    }
-
-    .login-box h2 {
-      margin: 0 0 1rem 0;
+    header {
       text-align: center;
-      color: var(--accent);
+      margin-bottom: 2rem;
     }
 
-    .login-box input {
-      width: 100%;
-      padding: 0.5rem;
+    h1 {
+      margin: 0;
+    }
+
+    p {
       margin: 0.5rem 0;
-      border: 1px solid var(--accent);
-      background: rgba(255,255,255,0.1);
-      color: var(--text-color);
-      border-radius: 4px;
-    }
-
-    .login-box button {
-      width: 100%;
-      padding: 0.5rem;
-      background: var(--accent);
-      border: none;
-      color: var(--text-color);
-      cursor: pointer;
-      border-radius: 4px;
-      margin-top: 1rem;
+      color: rgba(255,255,255,0.7);
     }
 
     .carousel-container {
@@ -92,6 +45,7 @@
       width: 100%;
       max-width: 800px;
       height: 60vh;
+      margin: 2rem auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -132,13 +86,10 @@
     .card-icon {
       font-size: 2rem;
       margin-bottom: 0.5rem;
-      font-size: 3rem;
-      margin-bottom: 1rem;
     }
 
     .card-title {
-      font-size: 1.5rem;
-      font-weight: bold;
+      font-size: 1.2rem;
     }
 
     .nav-button {
@@ -151,40 +102,30 @@
       padding: 1rem;
       cursor: pointer;
       border-radius: 50%;
-      box-shadow: 0 0 10px rgba(0,0,0,0.3);
-      z-index: 2;
+      font-size: 1.5rem;
     }
 
     .nav-prev {
-      left: 1rem;
+      left: -2rem;
     }
 
     .nav-next {
-      right: 1rem;
+      right: -2rem;
     }
 
     .dots {
       position: absolute;
-      bottom: 2rem;
+      bottom: -40px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 1rem;
-      z-index: 2;
-      visibility: hidden;
-      opacity: 0;
-      transition: visibility 0.3s, opacity 0.3s;
-    }
-
-    .dots.visible {
-      visibility: visible;
-      opacity: 1;
+      gap: 10px;
     }
 
     .dot {
       width: 10px;
       height: 10px;
-      background: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.3);
       border-radius: 50%;
       cursor: pointer;
       transition: background 0.3s ease;
@@ -198,116 +139,26 @@
       position: fixed;
       top: 1rem;
       right: 1rem;
-      background: var(--bg-color);
-      color: var(--text-color);
-      border: 1px solid var(--accent);
-      border-radius: 50%;
-      width: 3rem;
-      height: 3rem;
-      font-size: 1.5rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
-
-    .loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1001;
-    }
-
-    .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid var(--accent);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .page-content {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--bg-color);
-      color: var(--text-color);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem;
-    }
-
-    .page-content h1 {
-      margin-bottom: 1rem;
-    }
-
-    .page-content .controls {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-    }
-
-    .page-content button {
-      padding: 0.5rem 1rem;
-      background: var(--accent);
-      color: var(--text-color);
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .page-content button:hover {
-      background: #45a049;
-    }
-
-    .back-button {
-      position: absolute;
-      top: 1rem;
-      left: 1rem;
-      background: var(--accent);
-      color: var(--text-color);
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      z-index: 2;
-    }
-
-    #loginInfoPanel {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
       background: rgba(255,255,255,0.1);
-      border: 1px solid var(--accent);
-      border-radius: 4px;
-      padding: 1rem;
-      display: none;
-      z-index: 2;
+      border: none;
+      color: var(--text-color);
+      padding: 0.5rem;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.5rem;
     }
 
-    #loginInfoPanel div {
-      margin-bottom: 0.5rem;
+    .dark-theme {
+      --bg-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent: #4CAF50;
     }
 
-    #logoutBtn {
-      display: none;
+    .light-theme {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --accent: #4CAF50;
+    }
   </style>
 </head>
 <body>
@@ -317,31 +168,21 @@
   </header>
 
   <div class="carousel-container">
-    <button class="nav-button nav-prev" id="prevBtn" aria-label="Previous">&#8249;</button>
-    <div class="carousel" id="carousel"></div>
-    <button class="nav-button nav-next" id="nextBtn" aria-label="Next">&#8250;</button>
-  </div>
-  <div class="dots" id="dots"></div>
-
-  <div id="loginBox" class="login-box">
-    <h2>🔒 Access Required</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <button id="loginBtn">Login</button>
+    <div class="carousel"></div>
+    <div class="dots"></div>
+    <button class="nav-button nav-prev">←</button>
+    <button class="nav-button nav-next">→</button>
   </div>
 
-  <button id="themeToggle" aria-label="Toggle theme">🌙</button>
-
-  <div class="loading-overlay">
-    <div class="spinner"></div>
-  </div>
+  <button id="themeToggle">🌙</button>
 
   <script>
     // Initialize DOM elements
     const carousel = document.querySelector('.carousel');
     const dotsContainer = document.querySelector('.dots');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.querySelector('.nav-prev');
+    const nextBtn = document.querySelector('.nav-next');
+    const themeToggle = document.getElementById('themeToggle');
 
     // Define carousel data
     const CARDS = 8;
@@ -437,247 +278,30 @@
       if (Math.abs(diff) > 50) {
         if (diff > 0) {
           nextBtn.click();
-      const cards = data.map((item, i) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="card-icon">${item.icon}</div>
-          <div class="card-title">${item.title}</div>
-        `;
-        carousel.appendChild(card);
-
-        // Create navigation dots
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        dot.addEventListener('click', () => {
-          index = i;
-          render();
-        });
-        dotsContainer.appendChild(dot);
-      });
-
-      // Render function
-      function render() {
-        const cards = carousel.children;
-        Array.from(cards).forEach((card, i) => {
-          let offset = i - index;
-          if (offset > CARDS / 2) offset -= CARDS;
-          if (offset < -CARDS / 2) offset += CARDS;
-
-          const deg = offset * ANGLE;
-          const z = Math.abs(offset) <= 1 ? 340 : (Math.abs(offset) <= 2 ? 280 : 220);
-          const scale = Math.abs(offset) <= 1 ? 1.1 : (Math.abs(offset) <= 2 ? 0.9 : 0.7);
-          const opacity = Math.abs(offset) <= 2 ? 1 : 0.8;
-
-          card.style.transform = `translate(-50%, -50%) rotateY(${deg}deg) translateZ(${z}px) scale(${scale})`;
-          card.style.opacity = opacity;
-          card.classList.toggle('active', offset === 0);
-
-          if (offset === 0) {
-            card.onclick = () => {
-              alert(`Selected: ${data[index].title}`);
-
-                document.body.appendChild(pageContainer);
-                document.querySelector('.carousel-container').style.display = 'none';
-                document.querySelector('.dots').style.display = 'none';
-                elements.themeToggle.style.display = 'none';
-              } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to load page: ' + error.message);
-              } finally {
-                loadingOverlay.style.display = 'none';
-              }
-            };
-          }
-        });
-
-        const dots = elements.dotsContainer.children;
-        Array.from(dots).forEach((dot, i) => dot.classList.toggle('active', i === index));
-      }
-      let touchStartX = 0;
-      carousel.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-      });
-      carousel.addEventListener('touchmove', (e) => {
-        const touchMoveX = e.touches[0].clientX;
-        if (touchMoveX - touchStartX > 50) prevBtn.click();
-      document.getElementById('themeToggle').onclick = () => {
-        const isDark = document.body.classList.toggle('dark-theme');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
-      };
-
-      // Check login status and initialize authentication
-      const loginBtn = document.getElementById('loginBtn');
-      const logoutBtn = document.getElementById('logoutBtn');
-      const loginBox = document.getElementById('loginBox');
-      const loginInfoPanel = document.getElementById('loginInfoPanel');
-      const welcomeMessage = document.getElementById('welcomeMessage');
-      const loginTime = document.getElementById('loginTime');
-      const loginIP = document.getElementById('loginIP');
-
-      const user = localStorage.getItem('username');
-      if (!user) {
-        loginBox.style.display = 'flex';
-        loginInfoPanel.style.display = 'none';
-      } else {
-        const time = localStorage.getItem('loginTime');
-        const now = Date.now();
-        if (now - time > 3600000) { // 1 hour session
-          localStorage.removeItem('username');
-          localStorage.removeItem('loginTime');
-          loginBox.style.display = 'flex';
-          loginInfoPanel.style.display = 'none';
         } else {
-          loginInfoPanel.style.display = 'block';
-          welcomeMessage.textContent = `Welcome, ${user}`;
-          const loginTimeObj = new Date(time);
-          loginTime.textContent = `Last login: ${loginTimeObj.getFullYear()} ${loginTimeObj.getMonth() + 1} ${loginTimeObj.getDate()}, ${loginTimeObj.toLocaleTimeString()}`;
-          loginIP.textContent = 'Last login from IP: 127.0.0.1'; // Placeholder IP
+          prevBtn.click();
         }
       }
-
-      // Add authentication handlers
-      loginBtn.onclick = () => {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
-        if (username && password) {
-          localStorage.setItem('username', username);
-          localStorage.setItem('loginTime', Date.now());
-          loginBox.style.display = 'none';
-          loginInfoPanel.style.display = 'block';
-          
-          // Update login info
-          welcomeMessage.textContent = `Welcome, ${username}`;
-          const loginTimeObj = new Date(localStorage.getItem('loginTime'));
-          loginTime.textContent = `Last login: ${loginTimeObj.getFullYear()} ${loginTimeObj.getMonth() + 1} ${loginTimeObj.getDate()}, ${loginTimeObj.toLocaleTimeString()}`;
-          loginIP.textContent = 'Last login from IP: 127.0.0.1'; // Placeholder IP
-        } else {
-          alert('Please enter both username and password');
-        }
-      };
-
-      logoutBtn.onclick = () => {
-        localStorage.removeItem('username');
-        localStorage.removeItem('loginTime');
-        loginInfoPanel.style.display = 'none';
-        loginBox.style.display = 'flex';
-        
-        // Reset page if viewing one
-        const pageContainer = document.getElementById('pageContainer');
-        if (pageContainer) {
-          pageContainer.remove();
-          document.querySelector('.carousel-container').style.display = '';
-          document.querySelector('.dots').style.display = '';
-          document.getElementById('themeToggle').style.display = '';
-          window.location.hash = '';
-        }
-      };
-
-      // Initialize carousel
-      render();
-
-      // Add navigation handlers
-      prevBtn.onclick = () => {
-        index = (index - 1 + CARDS) % CARDS;
-        render();
-      };
-
-      nextBtn.onclick = () => {
-        index = (index + 1) % CARDS;
-        render();
-      };
-
-      // Add keyboard navigation
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') prevBtn.click();
-        if (e.key === 'ArrowRight') nextBtn.click();
-      });
-
-      // Add touch support
-      carousel.addEventListener('touchstart', (e) => {
-        const touchStartX = e.touches[0].clientX;
-        
-        carousel.addEventListener('touchend', (e) => {
-          const touchEndX = e.changedTouches[0].clientX;
-          const diff = touchStartX - touchEndX;
-          if (Math.abs(diff) > 50) { // Threshold for swipe
-            if (diff > 0) {
-              nextBtn.click();
-            } else {
-              prevBtn.click();
-            }
-          }
-        }, { once: true });
-      });
-
-      // Initialize login status
-      const currentUser = localStorage.getItem('username');
-      if (!currentUser) {
-        elements.loginBox.style.display = 'flex';
-        elements.loginInfoPanel.style.display = 'none';
-      } else {
-        const time = localStorage.getItem('loginTime');
-        const now = Date.now();
-        if (now - time > 3600000) { // 1 hour session
-          localStorage.removeItem('username');
-          localStorage.removeItem('loginTime');
-          elements.loginBox.style.display = 'flex';
-          elements.loginInfoPanel.style.display = 'none';
-        } else {
-          elements.loginInfoPanel.style.display = 'block';
-          elements.welcomeMessage.textContent = `Welcome, ${currentUser}`;
-          const loginTimeObj = new Date(time);
-          elements.loginTime.textContent = `Last login: ${loginTimeObj.getFullYear()} ${loginTimeObj.getMonth() + 1} ${loginTimeObj.getDate()}, ${loginTimeObj.toLocaleTimeString()}`;
-          elements.loginIP.textContent = 'Last login from IP: 127.0.0.1'; // Placeholder IP
-          elements.logoutBtn.style.display = 'block';
-        }
-      }
-
-      // Add authentication handlers
-      elements.loginBtn.onclick = () => {
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        
-        if (username && password) {
-          localStorage.setItem('username', username);
-          localStorage.setItem('loginTime', Date.now());
-          elements.loginBox.style.display = 'none';
-          elements.loginInfoPanel.style.display = 'block';
-          
-          // Update login info
-          elements.welcomeMessage.textContent = `Welcome, ${username}`;
-          const loginTimeObj = new Date(localStorage.getItem('loginTime'));
-          elements.loginTime.textContent = `Last login: ${loginTimeObj.getFullYear()} ${loginTimeObj.getMonth() + 1} ${loginTimeObj.getDate()}, ${loginTimeObj.toLocaleTimeString()}`;
-          elements.loginIP.textContent = 'Last login from IP: 127.0.0.1'; // Placeholder IP
-          elements.logoutBtn.style.display = 'block';
-        } else {
-          alert('Please enter both username and password');
-        }
-      };
-
-      elements.logoutBtn.onclick = () => {
-        localStorage.removeItem('username');
-        localStorage.removeItem('loginTime');
-        elements.loginInfoPanel.style.display = 'none';
-        elements.loginBox.style.display = 'flex';
-        elements.logoutBtn.style.display = 'none';
-        elements.welcomeMessage.textContent = '';
-        elements.loginTime.textContent = '';
-        elements.loginIP.textContent = '';
-        
-        // Reset page if viewing one
-        const pageContainer = document.getElementById('pageContainer');
-        if (pageContainer) {
-          pageContainer.remove();
-          document.querySelector('.carousel-container').style.display = '';
-          document.querySelector('.dots').style.display = '';
-          elements.themeToggle.style.display = '';
-          window.location.hash = '';
-        }
-      };
     });
+
+    // Theme toggle
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+      themeToggle.textContent = '☀️';
+    } else {
+      document.body.classList.remove('dark-theme');
+      themeToggle.textContent = '🌙';
+    }
+
+    themeToggle.onclick = () => {
+      const isDark = document.body.classList.toggle('dark-theme');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+    };
+
+    // Initial render
+    render();
   </script>
 </body>
 </html>
