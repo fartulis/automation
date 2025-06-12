@@ -165,31 +165,36 @@
     }
 
     /* Theme styles */
-    body.dark-theme {
-      background-color: #1a1a1a;
-      color: #ffffff;
+    :root {
+      --bg-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent: #4CAF50;
     }
 
-    body.light-theme {
-      background-color: #ffffff;
-      color: #000000;
-    }
-
-    .card, .dot, .nav-button {
-      transition: all 0.3s ease;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.1);
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
       color: var(--text-color);
+      transition: background-color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
-    .dot {
-      background: rgba(255,255,255,0.3);
+    .dark-theme {
+      --bg-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent: #4CAF50;
     }
 
-    .dot.active {
-      background: #4CAF50;
+    .light-theme {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --accent: #4CAF50;
     }
 
     body.light-theme .dot {
@@ -238,7 +243,8 @@
     themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
 
     themeToggle.onclick = () => {
-      const isDark = document.body.classList.toggle('dark-theme');
+      document.body.classList.toggle('dark-theme');
+      const isDark = document.body.classList.contains('dark-theme');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
       themeToggle.textContent = isDark ? '☀️' : '🌙';
     };
