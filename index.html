@@ -446,10 +446,18 @@
       e.preventDefault();
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-      const isAdmin = username === 'admin'; // Default admin check, can be made more secure
 
-      // Simple validation - in real app this would be server-side
-      if (!username || !password) {
+      // Only accept specific username/password combinations
+      const validCombinations = [
+        { username: 'user1', password: 'user1', isAdmin: false },
+        { username: 'admin', password: 'admin', isAdmin: true }
+      ];
+
+      const validUser = validCombinations.find(user => 
+        user.username === username && user.password === password
+      );
+
+      if (!validUser) {
         loginWindow.classList.add('shake');
         setTimeout(() => loginWindow.classList.remove('shake'), 500);
         return;
@@ -457,7 +465,7 @@
 
       // Store user data
       localStorage.setItem('username', username);
-      localStorage.setItem('isAdmin', isAdmin);
+      localStorage.setItem('isAdmin', validUser.isAdmin);
 
       // Hide login window
       loginWindow.style.display = 'none';
