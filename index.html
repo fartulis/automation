@@ -8,170 +8,217 @@
   <title>Home Automation 3D Carousel (V2.5.2)</title>
   <style>
     :root {
-      --bg-color: #000;
-      --card-bg: #1e1e1e;
-      --text-color: #eee;
-      --accent: #f5a623;
+      --bg-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent: #4CAF50;
     }
 
     body {
       margin: 0;
-      font-family: sans-serif;
-      background: var(--bg-color);
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
       color: var(--text-color);
-      overflow: hidden;
+      transition: background-color 0.3s ease;
     }
 
-    body.light-theme {
-      --bg-color: #f0f0f0;
-      --card-bg: #ffffff;
+    .dark-theme {
+      --bg-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent: #4CAF50;
+    }
+
+    .light-theme {
+      --bg-color: #ffffff;
       --text-color: #000000;
+      --accent: #4CAF50;
     }
-
-    header {
-      text-align: center;
-      margin: 1rem 0;
-    }
-
-    .carousel-container {
-      width: 100%;
-      perspective: 800px;
-      height: 200px;
-      position: relative;
-      margin: 2rem auto;
-    }
-
-    .carousel {
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-      position: relative;
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      will-change: transform;
-    }
-
-    .card {
-      width: 100px;
-      height: 140px;
-      background: var(--card-bg);
-      border-radius: 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      opacity: 0.8;
-      transform: translate(-50%, -50%);
-      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
-      will-change: transform;
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-      backface-visibility: hidden;
-    }
-
-    .card.active {
-      opacity: 1;
-      box-shadow: 0 0 0 6px rgba(245,166,35,0.5);
-      transform: translate(-50%, -50%) scale(1.1);
-      cursor: pointer;
-    }
-
-    .card-icon {
-      font-size: 3rem;
-    }
-
-    .card-title {
-      margin-top: 1rem;
-      font-size: 1rem;
-    }
-
-    .dots {
-      display: flex;
-      justify-content: center;
-      margin-top: 0.75rem;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      background: #999;
-      border-radius: 50%;
-      margin: 0 5px;
-      cursor: pointer;
-    }
-
-    .dot.active {
-      background: var(--accent);
-    }
-
-    .nav-button {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 2rem;
-      background: rgba(0,0,0,0.5);
-      color: white;
-      border: none;
-      padding: 1rem;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      z-index: 10;
-    }
-
-    .nav-button:hover {
-      background: rgba(0,0,0,0.7);
-      transform: translateY(-50%) scale(1.1);
-    }
-
-    .nav-prev { left: 10%; }
-    .nav-next { right: 10%; }
 
     .login-box {
-      display: none;
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(0,0,0,0.9);
+      background: var(--bg-color);
       padding: 2rem;
-      border-radius: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      display: none;
       z-index: 1000;
     }
 
+    .login-box h2 {
+      margin: 0 0 1rem 0;
+      text-align: center;
+      color: var(--accent);
+    }
+
     .login-box input {
-      display: block;
       width: 100%;
-      margin: 1rem 0;
       padding: 0.5rem;
-      border: 1px solid #ccc;
+      margin: 0.5rem 0;
+      border: 1px solid var(--accent);
+      background: rgba(255,255,255,0.1);
+      color: var(--text-color);
       border-radius: 4px;
-      font-size: 1rem;
     }
 
     .login-box button {
       width: 100%;
       padding: 0.5rem;
       background: var(--accent);
-      color: white;
       border: none;
-      border-radius: 4px;
+      color: var(--text-color);
       cursor: pointer;
-      font-size: 1rem;
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+
+    .carousel-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      perspective: 1000px;
+      width: 80%;
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.3s, opacity 0.3s;
+    }
+
+    .carousel-container.visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+    }
+
+    .card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-style: preserve-3d;
+      width: 80%;
+      height: 80%;
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      cursor: pointer;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--text-color);
+    }
+
+    .card.active {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--text-color);
+      padding: 1rem;
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+
+    .nav-prev {
+      left: 1rem;
+    }
+
+    .nav-next {
+      right: 1rem;
+    }
+
+    .dots {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 1rem;
+      z-index: 2;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.3s, opacity 0.3s;
+    }
+
+    .dots.visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .dot.active {
+      background: var(--accent);
+    }
+
+    #themeToggle {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--bg-color);
+      color: var(--text-color);
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
     }
 
     .loading-overlay {
-      display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      align-items: center;
+      background: rgba(0,0,0,0.7);
+      display: none;
       justify-content: center;
+      align-items: center;
+      z-index: 1001;
     }
 
     .spinner {
@@ -186,6 +233,77 @@
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+
+    .page-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .page-content h1 {
+      margin-bottom: 1rem;
+    }
+
+    .page-content .controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .page-content button {
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: var(--text-color);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .page-content button:hover {
+      background: #45a049;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: var(--accent);
+      color: var(--text-color);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    #loginInfoPanel {
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 1rem;
+      display: none;
+      z-index: 2;
+    }
+
+    #loginInfoPanel div {
+      margin-bottom: 0.5rem;
+    }
+
+    #logoutBtn {
+      display: none;
     }
   </style>
 </head>
@@ -364,11 +482,12 @@
         elements.themeToggle.textContent = isDark ? '☀️' : '🌙';
       };
 
+      // Initialize carousel
       const cards = data.map((item, i) => {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `<div class="card-icon">${item.icon}</div><div class="card-title">${item.title}</div>`;
-        carousel.appendChild(card);
+        elements.carousel.appendChild(card);
 
         const dot = document.createElement('div');
         dot.className = 'dot';
@@ -376,7 +495,7 @@
           index = i;
           render();
         });
-        dotsContainer.appendChild(dot);
+        elements.dotsContainer.appendChild(dot);
         return card;
       });
 
@@ -430,44 +549,26 @@
                   display: flex;
                   flex-direction: column;
                   align-items: center;
-                  padding: 2rem;
-                  box-sizing: border-box;
+                  justify-content: center;
                 `;
-                
-                // Add to body and show
-                document.body.appendChild(pageContainer);
-                pageContainer.style.display = 'block';
-                
-                // Hide carousel and other elements
-                document.querySelector('.carousel-container').style.display = 'none';
-                document.querySelector('.dots').style.display = 'none';
-                document.getElementById('themeToggle').style.display = 'none';
                 
                 // Add back button
                 const backButton = document.createElement('button');
-                backButton.textContent = '← Back to Carousel';
-                backButton.style.cssText = `
-                  position: fixed;
-                  top: 1rem;
-                  left: 1rem;
-                  background: var(--card-bg);
-                  color: var(--text-color);
-                  border: none;
-                  padding: 0.5rem 1rem;
-                  border-radius: 4px;
-                  cursor: pointer;
-                  z-index: 1000;
-                `;
+                backButton.className = 'back-button';
+                backButton.textContent = '← Back';
                 backButton.onclick = () => {
-                  // Remove page container and show carousel
                   pageContainer.remove();
-                  backButton.remove();
                   document.querySelector('.carousel-container').style.display = '';
                   document.querySelector('.dots').style.display = '';
-                  document.getElementById('themeToggle').style.display = '';
+                  elements.themeToggle.style.display = '';
                   window.location.hash = '';
                 };
-                document.body.appendChild(backButton);
+                pageContainer.insertBefore(backButton, pageContainer.firstChild);
+
+                document.body.appendChild(pageContainer);
+                document.querySelector('.carousel-container').style.display = 'none';
+                document.querySelector('.dots').style.display = 'none';
+                elements.themeToggle.style.display = 'none';
               } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to load page: ' + error.message);
@@ -478,60 +579,9 @@
           }
         });
 
-        const dots = dotsContainer.querySelectorAll('.dot');
-        dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+        const dots = elements.dotsContainer.children;
+        Array.from(dots).forEach((dot, i) => dot.classList.toggle('active', i === index));
       }
-
-      // Initialize carousel
-      render();
-
-      // Add navigation handlers
-      document.getElementById('prevBtn').onclick = () => {
-        index = (index - 1 + CARDS) % CARDS;
-        render();
-      };
-
-      document.getElementById('nextBtn').onclick = () => {
-        index = (index + 1) % CARDS;
-        render();
-      };
-
-      // Add keyboard navigation
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-          document.getElementById('prevBtn').click();
-        } else if (e.key === 'ArrowRight') {
-          document.getElementById('nextBtn').click();
-        }
-      });
-
-      // Add touch support
-      // Touch support
-      carousel.addEventListener('touchstart', (e) => {
-        const touchStartX = e.touches[0].clientX;
-        
-        carousel.addEventListener('touchend', (e) => {
-          const touchEndX = e.changedTouches[0].clientX;
-          const diff = touchStartX - touchEndX;
-          if (Math.abs(diff) > 50) { // Threshold for swipe
-            if (diff > 0) {
-              document.getElementById('nextBtn').click();
-            } else {
-              document.getElementById('prevBtn').click();
-            }
-          }
-        }, { once: true });
-      });
-
-      // Add theme toggle
-        index = i;
-        render();
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') prevBtn.click();
-        if (e.key === 'ArrowRight') nextBtn.click();
-      });
-
-      // Touch support
       let touchStartX = 0;
       carousel.addEventListener('touchstart', (e) => {
         touchStartX = e.touches[0].clientX;
