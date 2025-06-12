@@ -1,4 +1,35 @@
 /* style.css_V2.5.2 */
+/* Version: V2.5.2 - Light theme, 3D carousel layout, user panel, loading spinner */
+
+/* Loading Spinner */
+.loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* style.css_V2.5.2 */
 /* Version: V2.5.2 - Light theme, 3D carousel layout, user panel */
 
 :root {
@@ -39,7 +70,8 @@ header {
   height: 100%;
   transform-style: preserve-3d;
   position: relative;
-  transition: transform 0.6s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .card {
@@ -54,14 +86,18 @@ header {
   position: absolute;
   top: 50%;
   left: 50%;
-  opacity: 0.4;
+  opacity: 0.8;
   transform: translate(-50%, -50%);
-  transition: transform 0.6s ease, opacity 0.6s ease;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+  will-change: transform;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backface-visibility: hidden;
 }
 
 .card.active {
   opacity: 1;
   box-shadow: 0 0 0 6px rgba(245,166,35,0.5);
+  transform: translate(-50%, -50%) scale(1.1);
   cursor: pointer;
 }
 
@@ -98,9 +134,35 @@ header {
   background: rgba(0,0,0,0.5);
   color: white;
   border: none;
+  padding: 1rem;
+  border-radius: 50%;
   cursor: pointer;
-  z-index: 5;
+  transition: all 0.3s ease;
+  z-index: 10;
 }
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.nav-button:hover {
+  background: rgba(0,0,0,0.7);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.nav-prev { left: 10%; }
+.nav-next { right: 10%; }
 .nav-prev { left: 10%; }
 .nav-next { right: 10%; }
 
