@@ -488,6 +488,9 @@
       const loginTime = new Date().toLocaleString();
       lastLogin.textContent = `Last login: ${loginTime}`;
       localStorage.setItem('lastLogin', loginTime);
+
+      // Initialize page
+      initializePage();
     });
 
     // Check if user is logged in
@@ -505,16 +508,58 @@
     cards.forEach((card, index) => {
       card.addEventListener('click', () => {
         const category = data[index].key;
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
         
         if (category === 'settings' && !isAdmin) {
           alert('Access to Settings is restricted to administrators only.');
           return;
         }
 
-        // TODO: Add actual category page navigation logic
-        alert(`Selected: ${data[index].title}`);
+        // Navigate to category page
+        window.location.href = `/pages/${category}.html`;
       });
     });
+
+    // Initialize category pages
+    const initializePage = () => {
+      const username = localStorage.getItem('username');
+      if (!username) {
+        window.location.href = '/index.html';
+        return;
+      }
+
+      // Get current page from URL
+      const currentPage = window.location.pathname.split('/').pop();
+      const category = currentPage.replace('.html', '');
+
+      // Update page title
+      document.title = `Home Automation - ${data.find(item => item.key === category)?.title || 'Main'}`;
+
+      // Add back button
+      const backButton = document.createElement('button');
+      backButton.textContent = '← Back to Main Page';
+      backButton.style.cssText = `
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        background: rgba(255,255,255,0.1);
+        border: none;
+        color: var(--text-color);
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+      `;
+      backButton.onclick = () => {
+        window.location.href = '/index.html';
+      };
+      document.body.appendChild(backButton);
+    };
+
+    // Initialize page if we're not on the main page
+    if (window.location.pathname !== '/index.html') {
+      initializePage();
+    }
 
     // Add logout button
     const logoutButton = document.createElement('button');

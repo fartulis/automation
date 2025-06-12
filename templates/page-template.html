@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Automation - [TITLE]</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --accent: #4CAF50;
+        }
+
+        .dark-theme {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+        }
+
+        .light-theme {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .page-content {
+            margin-top: 60px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .logout-button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .welcome-message {
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .login-info {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <header>
+        <div class="header-left">
+            <span class="welcome-message">Welcome, [USERNAME]!</span>
+            <span class="login-info">Last login: [LOGIN_TIME]</span>
+            <span class="login-info">IP: [IP_ADDRESS]</span>
+        </div>
+        <div class="header-right">
+            <button id="themeToggle" class="theme-toggle">🌙</button>
+            <button id="logoutButton" class="logout-button">Logout</button>
+        </div>
+    </header>
+
+    <div class="page-content">
+        <!-- Page content will go here -->
+    </div>
+
+    <script>
+        // Load login status
+        const username = localStorage.getItem('username');
+        const loginTime = localStorage.getItem('lastLogin');
+        const ipAddress = localStorage.getItem('lastIp');
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+        if (!username) {
+            window.location.href = '/index.html';
+            return;
+        }
+
+        // Update header elements
+        document.querySelector('.welcome-message').textContent = `Welcome, ${username}!`;
+        document.querySelector('.login-info:last-child').textContent = `IP: ${ipAddress}`;
+        document.querySelector('.login-info:nth-child(2)').textContent = `Last login: ${loginTime}`;
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.classList.add(savedTheme === 'dark' ? 'dark-theme' : 'light-theme');
+        themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+        themeToggle.onclick = () => {
+            const isDark = !document.body.classList.contains('dark-theme');
+            document.body.classList.remove('dark-theme', 'light-theme');
+            document.body.classList.add(isDark ? 'dark-theme' : 'light-theme');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.textContent = isDark ? '☀️' : '🌙';
+        };
+
+        // Logout
+        const logoutButton = document.getElementById('logoutButton');
+        logoutButton.onclick = () => {
+            localStorage.removeItem('username');
+            localStorage.removeItem('lastLogin');
+            localStorage.removeItem('lastIp');
+            localStorage.removeItem('isAdmin');
+            window.location.href = '/index.html';
+        };
+
+        // Back to main page
+        const backButton = document.createElement('button');
+        backButton.textContent = '← Back to Main Page';
+        backButton.style.cssText = `
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1000;
+        `;
+        backButton.onclick = () => {
+            window.location.href = '/index.html';
+        };
+        document.body.appendChild(backButton);
+    </script>
+</body>
+</html>
