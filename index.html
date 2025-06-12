@@ -227,6 +227,20 @@
     // Add loading state
     document.body.classList.add('loading');
 
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.classList.toggle('dark-theme', savedTheme === 'dark');
+    document.body.classList.toggle('light-theme', savedTheme === 'light');
+    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    // Theme toggle click handler
+    themeToggle.onclick = () => {
+      const isDark = document.body.classList.toggle('dark-theme');
+      document.body.classList.toggle('light-theme', !isDark);
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+    };
+
     // Initialize carousel after DOM is ready
     window.addEventListener('DOMContentLoaded', () => {
       document.body.classList.remove('loading');
@@ -406,22 +420,21 @@
       }
     });
 
-    // Theme toggle initialization
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.body.classList.toggle('dark-theme', savedTheme === 'dark');
-    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
-    // Theme toggle click handler
-    themeToggle.onclick = () => {
-      const isDark = document.body.classList.toggle('dark-theme');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      themeToggle.textContent = isDark ? '☀️' : '🌙';
-      
-      // Update all elements with theme-dependent styles
+    // Update theme-dependent styles
+    function updateThemeStyles(isDark) {
       document.querySelectorAll('.card, .dot, .nav-button').forEach(el => {
         el.style.backgroundColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
         el.style.color = isDark ? 'white' : 'black';
       });
+    }
+
+    // Theme toggle click handler
+    themeToggle.onclick = () => {
+      const isDark = document.body.classList.toggle('dark-theme');
+      document.body.classList.toggle('light-theme', !isDark);
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+      updateThemeStyles(isDark);
     };
 
     // Initial render
