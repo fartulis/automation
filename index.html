@@ -22,7 +22,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       overflow: hidden;
       padding: 2rem 1rem;
     }
@@ -40,7 +40,7 @@
       text-align: center;
       width: 100%;
       max-width: 800px;
-      margin: 2rem 0 3rem 0;
+      margin: 2rem 0 1rem 0;
       padding: 0 1rem;
     }
 
@@ -260,7 +260,95 @@
     <button class="nav-button nav-next">→</button>
   </div>
 
+  <!-- Login Window -->
+  <div id="loginWindow" class="login-window">
+    <div class="login-content">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" class="login-button">Login</button>
+      </form>
+    </div>
+  </div>
+
   <button id="themeToggle">🌙</button>
+
+  <style>
+    .login-window {
+      width: 100%;
+      max-width: 400px;
+      margin: 2rem auto 0;
+      padding: 2rem;
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-content {
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .login-content h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: var(--text-color);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 5px;
+      background: rgba(255,255,255,0.1);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.2);
+      outline: none;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .login-button:hover {
+      background: #388E3C;
+      transform: translateY(-2px);
+    }
+  </style>
 
   <script>
     // Initialize DOM elements
