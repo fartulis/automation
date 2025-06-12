@@ -166,25 +166,30 @@
 
     /* Theme styles */
     body.dark-theme {
-      --bg-color: #1a1a1a;
-      --text-color: #ffffff;
-      --accent: #4CAF50;
+      background-color: #1a1a1a;
+      color: #ffffff;
     }
 
     body.light-theme {
-      --bg-color: #ffffff;
-      --text-color: #000000;
-      --accent: #4CAF50;
+      background-color: #ffffff;
+      color: #000000;
     }
 
-    body.light-theme {
-      background-color: var(--bg-color);
+    .card, .dot, .nav-button {
+      transition: all 0.3s ease;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.1);
       color: var(--text-color);
     }
 
-    body.light-theme .card {
-      background: rgba(0,0,0,0.1);
-      color: var(--text-color);
+    .dot {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .dot.active {
+      background: #4CAF50;
     }
 
     body.light-theme .dot {
