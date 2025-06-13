@@ -508,12 +508,25 @@
 
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', () => {
+      // Initialize DOM elements
+      const carousel = document.querySelector('.carousel');
+      const dotsContainer = document.querySelector('.dots');
+      const prevBtn = document.querySelector('.nav-prev');
+      const nextBtn = document.querySelector('.nav-next');
+      const loginWindow = document.getElementById('loginWindow');
+      const loginStatus = document.getElementById('loginStatus');
+      const welcomeMessage = loginStatus.querySelector('.welcome-message');
+      const lastLogin = loginStatus.querySelector('.last-login');
+      const ipAddress = loginStatus.querySelector('.ip-address');
+      const loginForm = document.getElementById('loginForm');
+
       // Check if user is logged in
-      const savedUsername = localStorage.getItem('username');
+      const username = localStorage.getItem('username');
       const isAdmin = localStorage.getItem('isAdmin') === 'true';
+      const lastLoginTime = localStorage.getItem('lastLogin');
 
       // If not logged in, redirect to login page
-      if (!savedUsername) {
+      if (!username) {
         window.location.href = '/automation/index.html';
         return;
       }
@@ -521,12 +534,11 @@
       // If logged in, hide login window and show status
       loginWindow.style.display = 'none';
       loginStatus.classList.remove('hidden');
-      welcomeMessage.textContent = `Welcome, ${savedUsername}!`;
+      welcomeMessage.textContent = `Welcome, ${username}!`;
 
       // Check if login is expired (e.g., after 24 hours)
-      const storedLoginTime = localStorage.getItem('lastLogin');
-      if (storedLoginTime) {
-        const loginTime = new Date(storedLoginTime);
+      if (lastLoginTime) {
+        const loginTime = new Date(lastLoginTime);
         const now = new Date();
         const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
         
@@ -540,59 +552,12 @@
           return;
         }
 
-        lastLogin.textContent = `Last login: ${storedLoginTime}`;
-      }
-
-      // Initialize page
-      initializePage();
-    });
-
-    // Initialize page
-    const initializePage = () => {
-      // Get stored credentials
-      const username = localStorage.getItem('username');
-      const isAdmin = localStorage.getItem('isAdmin') === 'true';
-      const lastLogin = localStorage.getItem('lastLogin');
-
-      // If not logged in, redirect to login page
-      if (!username) {
-        window.location.href = 'index.html';
-        return;
-      }
-
-      // If logged in, hide login window and show status
-      const loginWindow = document.getElementById('loginWindow');
-      const loginStatus = document.getElementById('loginStatus');
-      const welcomeMessage = loginStatus.querySelector('.welcome-message');
-      const lastLoginElement = loginStatus.querySelector('.last-login');
-      const ipAddressElement = loginStatus.querySelector('.ip-address');
-
-      loginWindow.style.display = 'none';
-      loginStatus.classList.remove('hidden');
-      welcomeMessage.textContent = `Welcome, ${username}!`;
-
-      // Check if login is expired (e.g., after 24 hours)
-      if (lastLogin) {
-        const loginTime = new Date(lastLogin);
-        const now = new Date();
-        const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
-        
-        if (hoursSinceLogin > 24) {
-          // Session expired
-          localStorage.removeItem('username');
-          localStorage.removeItem('isAdmin');
-          localStorage.removeItem('lastLogin');
-          localStorage.removeItem('lastIp');
-          window.location.href = 'index.html';
-          return;
-        }
-
-        lastLoginElement.textContent = `Last login: ${lastLogin}`;
+        lastLogin.textContent = `Last login: ${lastLoginTime}`;
       }
 
       // Initialize carousel
       initializeCarousel();
-    };
+    });
 
     // Initialize carousel
     const initializeCarousel = () => {
