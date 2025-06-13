@@ -512,9 +512,30 @@
 
     // Initialize category pages
     const initializePage = () => {
+      // Get stored credentials
       const username = localStorage.getItem('username');
-      if (!username) {
-        // Redirect to login page
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+      const lastLogin = localStorage.getItem('lastLogin');
+      const lastIp = localStorage.getItem('lastIp');
+
+      // Validate stored credentials
+      if (!username || !lastLogin || !lastIp) {
+        // Invalid or missing credentials
+        window.location.href = '/automation/index.html';
+        return;
+      }
+
+      // Check if login is expired (e.g., after 24 hours)
+      const loginTime = new Date(lastLogin);
+      const now = new Date();
+      const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+      
+      if (hoursSinceLogin > 24) {
+        // Session expired
+        localStorage.removeItem('username');
+        localStorage.removeItem('isAdmin');
+        localStorage.removeItem('lastLogin');
+        localStorage.removeItem('lastIp');
         window.location.href = '/automation/index.html';
         return;
       }

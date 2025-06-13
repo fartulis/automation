@@ -5,19 +5,251 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Settings Page</title>
   <style>
-    body { background: #000; color: #fff; font-family: Arial, sans-serif; padding: 2rem; }
-    .welcome { position: fixed; top: 1rem; left: 1rem; font-weight: bold; }
-    a { color: #F5A623; text-decoration: none; font-weight: bold; }
+    body { 
+      background: #000; 
+      color: #fff; 
+      font-family: Arial, sans-serif; 
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .welcome { 
+      position: fixed; 
+      top: 1rem; 
+      left: 1rem; 
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      padding-right: 2rem;
+    }
+    .user-info {
+      background: rgba(255,255,255,0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    .user-list {
+      background: rgba(255,255,255,0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    .user-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .user-item:last-child {
+      border-bottom: none;
+    }
+    .user-item .info {
+      display: flex;
+      flex-direction: column;
+    }
+    .user-item .actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .user-item .actions button {
+      background: #F5A623;
+      color: #000;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .user-item .actions button:hover {
+      background: #E59613;
+    }
+    .add-user-form {
+      display: none;
+      background: rgba(255,255,255,0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    .add-user-form.active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 4px;
+    }
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+    }
+    .warning {
+      color: #FF4444;
+      margin-top: 1rem;
+    }
+    .success {
+      color: #4CAF50;
+      margin-top: 1rem;
+    }
+    .error {
+      color: #FF4444;
+      margin-top: 1rem;
+    }
   </style>
 </head>
 <body>
   <div class="welcome" id="userBar"></div>
-  <h1>Welcome</h1>
-  <p>This is the <strong>Settings</strong> page.</p>
+  
+  <div class="user-info">
+    <h2>Current User</h2>
+    <div id="userInfo"></div>
+  </div>
+
+  <div class="user-list">
+    <h2>User Management (Admin Only)</h2>
+    <div class="form-actions">
+      <button id="addUserBtn">Add New User</button>
+    </div>
+    <div id="addUserForm" class="add-user-form">
+      <h3>Add New User</h3>
+      <form id="userForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" name="fullName">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+        </div>
+        <div class="form-group">
+          <label for="isAdmin">Admin Role</label>
+          <input type="checkbox" id="isAdmin" name="isAdmin">
+        </div>
+        <div class="form-actions">
+          <button type="submit">Add User</button>
+          <button type="button" id="cancelAdd">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <div id="userList"></div>
+  </div>
+
   <a href="../index.html">← Back to Carousel</a>
+
   <script>
+    // Initialize DOM elements
+    const userBar = document.getElementById('userBar');
+    const userInfo = document.getElementById('userInfo');
+    const userList = document.getElementById('userList');
+    const addUserBtn = document.getElementById('addUserBtn');
+    const addUserForm = document.getElementById('addUserForm');
+    const cancelAdd = document.getElementById('cancelAdd');
+    const userForm = document.getElementById('userForm');
+
+    // Check if user is logged in and is admin
     const user = localStorage.getItem('username');
-    if (user) document.getElementById('userBar').textContent = 'Welcome: ' + user;
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+    if (!user) {
+      window.location.href = '../index.html';
+      return;
+    }
+
+    // Show user info
+    userBar.textContent = `Welcome: ${user}`;
+    
+    // Only show admin controls if user is admin
+    if (!isAdmin) {
+      addUserBtn.style.display = 'none';
+      addUserForm.style.display = 'none';
+    }
+
+    // Load user info
+    function loadUserInfo() {
+      const userData = JSON.parse(localStorage.getItem('users') || '[]');
+      const currentUser = userData.find(u => u.username === user);
+      if (currentUser) {
+        userInfo.innerHTML = `
+          <p><strong>Full Name:</strong> ${currentUser.fullName || 'Not set'}</p>
+          <p><strong>Email:</strong> ${currentUser.email || 'Not set'}</p>
+          <p><strong>Role:</strong> ${currentUser.isAdmin ? 'Admin' : 'User'}</p>
+        `;
+      }
+    }
+
+    // Load user list (for admins only)
+    function loadUserList() {
+      const userData = JSON.parse(localStorage.getItem('users') || '[]');
+      if (!isAdmin) return;
+
+      userList.innerHTML = userData.map(user => `
+        <div class="user-item">
+          <div class="info">
+            <p><strong>${user.username}</strong></p>
+            <p>${user.fullName || 'No name'}</p>
+            <p>${user.email || 'No email'}</p>
+          </div>
+          <div class="actions">
+            <button onclick="editUser('${user.username}')">Edit</button>
+            <button onclick="deleteUser('${user.username}')" style="background: #FF4444;">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Add new user
+    userForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(userForm);
+      const userData = JSON.parse(localStorage.getItem('users') || '[]');
+      
+      // Check if username exists
+      if (userData.some(u => u.username === formData.get('username'))) {
+        alert('Username already exists!');
+        return;
+      }
+
+      // Add new user
+      userData.push({
+        username: formData.get('username'),
+        password: formData.get('password'),
+        fullName: formData.get('fullName'),
+        email: formData.get('email'),
+        isAdmin: formData.get('isAdmin') === 'on',
+        createdAt: new Date().toISOString()
+      });
+
+      localStorage.setItem('users', JSON.stringify(userData));
+      addUserForm.classList.remove('active');
+      loadUserList();
+      userForm.reset();
+      alert('User added successfully!');
+    });
+
+    // Toggle add user form
+    addUserBtn.onclick = () => addUserForm.classList.add('active');
+    cancelAdd.onclick = () => addUserForm.classList.remove('active');
+
+    // Initialize page
+    loadUserInfo();
+    loadUserList();
   </script>
 </body>
 </html>
