@@ -839,6 +839,11 @@
       const prevBtn = document.querySelector('.nav-prev');
       const nextBtn = document.querySelector('.nav-next');
 
+      if (!carousel || !dotsContainer || !prevBtn || !nextBtn) {
+        console.error('Missing carousel elements');
+        return;
+      }
+
       // Create cards
       const CARDS = data.length;
       const ANGLE = 360 / CARDS;
@@ -898,9 +903,11 @@
 
         // Update dots
         const dots = dotsContainer.children;
-        Array.from(dots).forEach((dot, i) => {
-          dot.classList.toggle('active', i === index);
-        });
+        if (dots.length > 0) {
+          Array.from(dots).forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+          });
+        }
       }
 
       // Navigation handlers
