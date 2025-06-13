@@ -504,10 +504,34 @@
     const savedUsername = localStorage.getItem('username');
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-    if (savedUsername) {
+    // If not logged in, show login window
+    if (!savedUsername) {
+      loginWindow.style.display = 'block';
+      loginStatus.classList.add('hidden');
+    } else {
+      // If logged in, hide login window and show status
       loginWindow.style.display = 'none';
       loginStatus.classList.remove('hidden');
       welcomeMessage.textContent = `Welcome, ${savedUsername}!`;
+
+      // Check if login is expired (e.g., after 24 hours)
+      const lastLogin = localStorage.getItem('lastLogin');
+      if (lastLogin) {
+        const loginTime = new Date(lastLogin);
+        const now = new Date();
+        const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+        
+        if (hoursSinceLogin > 24) {
+          // Session expired
+          localStorage.removeItem('username');
+          localStorage.removeItem('isAdmin');
+          localStorage.removeItem('lastLogin');
+          localStorage.removeItem('lastIp');
+          loginWindow.style.display = 'block';
+          loginStatus.classList.add('hidden');
+          return;
+        }
+      }
     }
 
     // Initialize category pages
