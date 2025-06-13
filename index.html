@@ -411,7 +411,7 @@
   </style>
 
   <script>
-    // Initialize DOM elements and data
+    // Initialize DOM elements
     const carousel = document.querySelector('.carousel');
     const dotsContainer = document.querySelector('.dots');
     const prevBtn = document.querySelector('.nav-prev');
@@ -423,18 +423,6 @@
     const ipAddress = loginStatus.querySelector('.ip-address');
     const loginForm = document.getElementById('loginForm');
     const loginWindow = document.getElementById('loginWindow');
-    
-    // Data for carousel
-    const data = [
-      { icon: '🎵', title: 'Audio', key: 'audio' },
-      { icon: '💡', title: 'Lighting', key: 'lighting' },
-      { icon: '🌡️', title: 'Climate', key: 'climate' },
-      { icon: '🔒', title: 'Security', key: 'security' },
-      { icon: '📺', title: 'Entertainment', key: 'entertainment' },
-      { icon: '🔋', title: 'Energy', key: 'energy' },
-      { icon: '💧', title: 'Water', key: 'water' },
-      { icon: '⚙️', title: 'Settings', key: 'settings' }
-    ];
 
     // Theme toggle
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -539,7 +527,54 @@
       }
     }
 
-    // Initialize carousel after login
+    // Initialize page
+    const initializePage = () => {
+      // Get stored credentials
+      const username = localStorage.getItem('username');
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+      const lastLogin = localStorage.getItem('lastLogin');
+
+      // If not logged in, redirect to login page
+      if (!username) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // If logged in, hide login window and show status
+      const loginWindow = document.getElementById('loginWindow');
+      const loginStatus = document.getElementById('loginStatus');
+      const welcomeMessage = loginStatus.querySelector('.welcome-message');
+      const lastLoginElement = loginStatus.querySelector('.last-login');
+      const ipAddressElement = loginStatus.querySelector('.ip-address');
+
+      loginWindow.style.display = 'none';
+      loginStatus.classList.remove('hidden');
+      welcomeMessage.textContent = `Welcome, ${username}!`;
+
+      // Check if login is expired (e.g., after 24 hours)
+      if (lastLogin) {
+        const loginTime = new Date(lastLogin);
+        const now = new Date();
+        const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+        
+        if (hoursSinceLogin > 24) {
+          // Session expired
+          localStorage.removeItem('username');
+          localStorage.removeItem('isAdmin');
+          localStorage.removeItem('lastLogin');
+          localStorage.removeItem('lastIp');
+          window.location.href = 'index.html';
+          return;
+        }
+
+        lastLoginElement.textContent = `Last login: ${lastLogin}`;
+      }
+
+      // Initialize carousel
+      initializeCarousel();
+    };
+
+    // Initialize carousel
     const initializeCarousel = () => {
       // Get carousel elements
       const carousel = document.querySelector('.carousel');
@@ -654,24 +689,7 @@
 
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', () => {
-      // Initialize carousel after successful login
-      if (savedUsername) {
-        console.log('Initializing carousel for logged-in user:', savedUsername);
-        initializeCarousel();
-      }
-    });
-
-    // Initialize category pages
-    const initializePage = () => {
-      // Get stored credentials
-      const username = localStorage.getItem('username');
-      const isAdmin = localStorage.getItem('isAdmin') === 'true';
-      const lastLogin = localStorage.getItem('lastLogin');
-      const lastIp = localStorage.getItem('lastIp');
-
-      // Validate stored credentials
-      if (!username || !lastLogin || !lastIp) {
-        // Invalid or missing credentials
+      // Initialize page
         window.location.href = '/automation/index.html';
         return;
       }
