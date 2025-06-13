@@ -550,6 +550,8 @@
       const ANGLE = 360 / CARDS;
       let index = 0;
 
+      console.log('Creating cards:', { CARDS, ANGLE });
+
       // Create cards
       data.forEach((item, i) => {
         const card = document.createElement('div');
@@ -559,6 +561,8 @@
           <div class="card-title">${item.title}</div>
         `;
         carousel.appendChild(card);
+
+        console.log('Created card:', { index: i, title: item.title });
 
         // Create navigation dots
         const dot = document.createElement('div');
@@ -587,6 +591,7 @@
       // Render function
       function render() {
         const cards = carousel.children;
+        console.log('Rendering cards:', { count: cards.length });
         Array.from(cards).forEach((card, i) => {
           let offset = i - index;
           if (offset > CARDS / 2) offset -= CARDS;
@@ -596,6 +601,8 @@
           const z = Math.abs(offset) <= 1 ? 340 : (Math.abs(offset) <= 2 ? 280 : 220);
           const scale = Math.abs(offset) <= 1 ? 1.1 : (Math.abs(offset) <= 2 ? 0.9 : 0.7);
           const opacity = Math.abs(offset) <= 2 ? 1 : 0.8;
+
+          console.log('Rendering card:', { index: i, offset, deg, z, scale, opacity });
 
           card.style.transform = `translate(-50%, -50%) rotateY(${deg}deg) translateZ(${z}px) scale(${scale})`;
           card.style.opacity = opacity;
@@ -625,14 +632,17 @@
       });
 
       // Initial render
+      console.log('Performing initial render');
       render();
 
       // Remove loading state
       document.body.classList.remove('loading');
+      console.log('Loading state removed');
     };
 
     // Initialize carousel after successful login
     if (savedUsername) {
+      console.log('Initializing carousel for logged-in user:', savedUsername);
       initializeCarousel();
     }
 
