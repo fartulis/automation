@@ -619,7 +619,6 @@
           render();
         });
         dotsContainer.appendChild(dot);
-
         // Add click handler for card navigation
         card.addEventListener('click', () => {
           const category = item.key;
@@ -690,12 +689,8 @@
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', () => {
       // Initialize page
-        window.location.href = '/automation/index.html';
-        return;
-      }
-
-      // Check if login is expired (e.g., after 24 hours)
-      const loginTime = new Date(lastLogin);
+      initializePage();
+    });
       const now = new Date();
       const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
       
