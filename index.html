@@ -506,38 +506,46 @@
       }
     });
 
-    // Check if user is logged in
-    const savedUsername = localStorage.getItem('username');
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if user is logged in
+      const savedUsername = localStorage.getItem('username');
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
-    // If not logged in, redirect to login page
-    if (!savedUsername) {
-      window.location.href = '/automation/index.html';
-      return;
-    }
-
-    // If logged in, hide login window and show status
-    loginWindow.style.display = 'none';
-    loginStatus.classList.remove('hidden');
-    welcomeMessage.textContent = `Welcome, ${savedUsername}!`;
-
-    // Check if login is expired (e.g., after 24 hours)
-    const storedLoginTime = localStorage.getItem('lastLogin');
-    if (storedLoginTime) {
-      const loginTime = new Date(storedLoginTime);
-      const now = new Date();
-      const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
-      
-      if (hoursSinceLogin > 24) {
-        // Session expired
-        localStorage.removeItem('username');
-        localStorage.removeItem('isAdmin');
-        localStorage.removeItem('lastLogin');
-        localStorage.removeItem('lastIp');
+      // If not logged in, redirect to login page
+      if (!savedUsername) {
         window.location.href = '/automation/index.html';
         return;
       }
-    }
+
+      // If logged in, hide login window and show status
+      loginWindow.style.display = 'none';
+      loginStatus.classList.remove('hidden');
+      welcomeMessage.textContent = `Welcome, ${savedUsername}!`;
+
+      // Check if login is expired (e.g., after 24 hours)
+      const storedLoginTime = localStorage.getItem('lastLogin');
+      if (storedLoginTime) {
+        const loginTime = new Date(storedLoginTime);
+        const now = new Date();
+        const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+        
+        if (hoursSinceLogin > 24) {
+          // Session expired
+          localStorage.removeItem('username');
+          localStorage.removeItem('isAdmin');
+          localStorage.removeItem('lastLogin');
+          localStorage.removeItem('lastIp');
+          window.location.href = '/automation/index.html';
+          return;
+        }
+
+        lastLogin.textContent = `Last login: ${storedLoginTime}`;
+      }
+
+      // Initialize page
+      initializePage();
+    });
 
     // Initialize page
     const initializePage = () => {
