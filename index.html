@@ -547,6 +547,16 @@
       const prevBtn = document.querySelector('.nav-prev');
       const nextBtn = document.querySelector('.nav-next');
 
+      if (!carousel || !dotsContainer || !prevBtn || !nextBtn) {
+        console.error('Missing carousel elements:', {
+          carousel: !!carousel,
+          dotsContainer: !!dotsContainer,
+          prevBtn: !!prevBtn,
+          nextBtn: !!nextBtn
+        });
+        return;
+      }
+
       // Create cards
       const CARDS = data.length;
       const ANGLE = 360 / CARDS;
@@ -642,11 +652,14 @@
       console.log('Loading state removed');
     };
 
-    // Initialize carousel after successful login
-    if (savedUsername) {
-      console.log('Initializing carousel for logged-in user:', savedUsername);
-      initializeCarousel();
-    }
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize carousel after successful login
+      if (savedUsername) {
+        console.log('Initializing carousel for logged-in user:', savedUsername);
+        initializeCarousel();
+      }
+    });
 
     // Initialize category pages
     const initializePage = () => {
