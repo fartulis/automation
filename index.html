@@ -410,21 +410,30 @@
   </style>
 
   <script>
-    // Initialize DOM elements
+    // Initialize DOM elements and data
     const carousel = document.querySelector('.carousel');
     const dotsContainer = document.querySelector('.dots');
     const prevBtn = document.querySelector('.nav-prev');
     const nextBtn = document.querySelector('.nav-next');
     const themeToggle = document.getElementById('themeToggle');
-
-    // Add loading state
-    document.body.classList.add('loading');
-
-    // Login status elements
     const loginStatus = document.getElementById('loginStatus');
     const welcomeMessage = loginStatus.querySelector('.welcome-message');
     const lastLogin = loginStatus.querySelector('.last-login');
     const ipAddress = loginStatus.querySelector('.ip-address');
+    const loginForm = document.getElementById('loginForm');
+    const loginWindow = document.getElementById('loginWindow');
+    
+    // Data for carousel
+    const data = [
+      { icon: '🎵', title: 'Audio', key: 'audio' },
+      { icon: '💡', title: 'Lighting', key: 'lighting' },
+      { icon: '🌡️', title: 'Climate', key: 'climate' },
+      { icon: '🔒', title: 'Security', key: 'security' },
+      { icon: '📺', title: 'Entertainment', key: 'entertainment' },
+      { icon: '🔋', title: 'Energy', key: 'energy' },
+      { icon: '💧', title: 'Water', key: 'water' },
+      { icon: '⚙️', title: 'Settings', key: 'settings' }
+    ];
 
     // Theme toggle
     const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -440,9 +449,6 @@
     };
 
     // Login form handling
-    const loginForm = document.getElementById('loginForm');
-    const loginWindow = document.getElementById('loginWindow');
-
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const username = document.getElementById('username').value;
@@ -504,29 +510,12 @@
       welcomeMessage.textContent = `Welcome, ${savedUsername}!`;
     }
 
-    // Carousel card click handler
-    const cards = document.querySelectorAll('.card');
-    cards.forEach((card, index) => {
-      card.addEventListener('click', () => {
-        const category = data[index].key;
-        const isAdmin = localStorage.getItem('isAdmin') === 'true';
-        
-        if (category === 'settings' && !isAdmin) {
-          alert('Access to Settings is restricted to administrators only.');
-          return;
-        }
-
-        // Navigate to category page using relative path
-        window.location.href = `./pages/${category}.html`;
-      });
-    });
-
     // Initialize category pages
     const initializePage = () => {
       const username = localStorage.getItem('username');
       if (!username) {
-        // Redirect to login page using relative path
-        window.location.href = './index.html';
+        // Redirect to login page
+        window.location.href = '/automation/index.html';
         return;
       }
 
@@ -553,13 +542,13 @@
         z-index: 1000;
       `;
       backButton.onclick = () => {
-        window.location.href = '/index.html';
+        window.location.href = '/automation/index.html';
       };
       document.body.appendChild(backButton);
     };
 
     // Initialize page if we're not on the main page
-    if (window.location.pathname !== '/index.html') {
+    if (window.location.pathname !== '/automation/index.html') {
       initializePage();
     }
 
@@ -594,23 +583,13 @@
     loginStatus.querySelector('.status-content').appendChild(logoutButton);
 
     // Initialize carousel after DOM is ready
-    window.addEventListener('DOMContentLoaded', () => {
-      document.body.classList.remove('loading');
-      
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add loading state
+      document.body.classList.add('loading');
+
       // Create cards
       const CARDS = 8;
       const ANGLE = 360 / CARDS;
-      const data = [
-        { icon: '🎵', title: 'Audio', key: 'audio' },
-        { icon: '💡', title: 'Lighting', key: 'lighting' },
-        { icon: '🌡️', title: 'Climate', key: 'climate' },
-        { icon: '🔒', title: 'Security', key: 'security' },
-        { icon: '📺', title: 'Entertainment', key: 'entertainment' },
-        { icon: '🔋', title: 'Energy', key: 'energy' },
-        { icon: '💧', title: 'Water', key: 'water' },
-        { icon: '⚙️', title: 'Settings', key: 'settings' }
-      ];
-
       let index = 0;
 
       // Create cards
@@ -631,6 +610,20 @@
           render();
         });
         dotsContainer.appendChild(dot);
+
+        // Add click handler for card navigation
+        card.addEventListener('click', () => {
+          const category = item.key;
+          const isAdmin = localStorage.getItem('isAdmin') === 'true';
+          
+          if (category === 'settings' && !isAdmin) {
+            alert('Access to Settings is restricted to administrators only.');
+            return;
+          }
+
+          // Navigate to category page
+          window.location.href = `/automation/pages/${category}.html`;
+        });
       });
 
       // Render function
@@ -649,12 +642,6 @@
           card.style.transform = `translate(-50%, -50%) rotateY(${deg}deg) translateZ(${z}px) scale(${scale})`;
           card.style.opacity = opacity;
           card.classList.toggle('active', offset === 0);
-
-          if (offset === 0) {
-            card.onclick = () => {
-              alert(`Selected: ${data[index].title}`);
-            };
-          }
         });
 
         // Update dots
@@ -697,7 +684,8 @@
         }
       });
 
-      // Initial render
+      // Remove loading state and render
+      document.body.classList.remove('loading');
       render();
     });
   </script>
