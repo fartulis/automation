@@ -266,6 +266,8 @@
     <button class="nav-button nav-next">→</button>
   </div>
 
+
+
   <!-- Login Window -->
   <div id="loginWindow" class="login-window">
     <div class="login-content">
@@ -411,100 +413,7 @@
   </style>
 
   <script>
-    // Carousel data
-    const data = [
-      { icon: '🎵', title: 'Audio', key: 'audio' },
-      { icon: '💡', title: 'Lighting', key: 'lighting' },
-      { icon: '🌡️', title: 'Climate', key: 'climate' },
-      { icon: '🔒', title: 'Security', key: 'security' },
-      { icon: '📺', title: 'Entertainment', key: 'entertainment' },
-      { icon: '🔋', title: 'Energy', key: 'energy' },
-      { icon: '💧', title: 'Water', key: 'water' },
-      { icon: '⚙️', title: 'Settings', key: 'settings' }
-    ];
 
-    // Initialize DOM elements
-    const carousel = document.querySelector('.carousel');
-    const dotsContainer = document.querySelector('.dots');
-    const prevBtn = document.querySelector('.nav-prev');
-    const nextBtn = document.querySelector('.nav-next');
-    const themeToggle = document.getElementById('themeToggle');
-    const loginStatus = document.getElementById('loginStatus');
-    const welcomeMessage = loginStatus.querySelector('.welcome-message');
-    const lastLogin = loginStatus.querySelector('.last-login');
-    const ipAddress = loginStatus.querySelector('.ip-address');
-    const loginForm = document.getElementById('loginForm');
-    const loginWindow = document.getElementById('loginWindow');
-
-    // Theme toggle
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.body.classList.add(savedTheme === 'dark' ? 'dark-theme' : 'light-theme');
-    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
-
-    themeToggle.onclick = () => {
-      const isDark = !document.body.classList.contains('dark-theme');
-      document.body.classList.remove('dark-theme', 'light-theme');
-      document.body.classList.add(isDark ? 'dark-theme' : 'light-theme');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      themeToggle.textContent = isDark ? '☀️' : '🌙';
-    };
-
-    // Login form handling
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      // Only accept specific username/password combinations
-      const validCombinations = [
-        { username: 'user1', password: 'user1', isAdmin: false },
-        { username: 'admin', password: 'admin', isAdmin: true }
-      ];
-
-      const validUser = validCombinations.find(user => 
-        user.username === username && user.password === password
-      );
-
-      if (!validUser) {
-        loginWindow.classList.add('shake');
-        setTimeout(() => loginWindow.classList.remove('shake'), 500);
-        return;
-      }
-
-      // Store user data
-      localStorage.setItem('username', username);
-      localStorage.setItem('isAdmin', validUser.isAdmin);
-
-      // Hide login window
-      loginWindow.style.display = 'none';
-
-      // Show login status
-      loginStatus.classList.remove('hidden');
-
-      // Update welcome message
-      welcomeMessage.textContent = `Welcome, ${username}!`;
-
-      // Get and store IP address
-      fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => {
-          ipAddress.textContent = `IP: ${data.ip}`;
-          localStorage.setItem('lastIp', data.ip);
-        });
-
-      // Store login time
-      const loginTime = new Date().toLocaleString();
-      lastLogin.textContent = `Last login: ${loginTime}`;
-      localStorage.setItem('lastLogin', loginTime);
-
-      // Initialize page
-      initializePage();
-      
-      // Initialize carousel if logged in
-      if (localStorage.getItem('username')) {
-        initializeCarousel();
-      }
-    });
 
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', () => {
@@ -513,12 +422,78 @@
       const dotsContainer = document.querySelector('.dots');
       const prevBtn = document.querySelector('.nav-prev');
       const nextBtn = document.querySelector('.nav-next');
-      const loginWindow = document.getElementById('loginWindow');
+      const themeToggle = document.getElementById('themeToggle');
       const loginStatus = document.getElementById('loginStatus');
       const welcomeMessage = loginStatus.querySelector('.welcome-message');
       const lastLogin = loginStatus.querySelector('.last-login');
       const ipAddress = loginStatus.querySelector('.ip-address');
       const loginForm = document.getElementById('loginForm');
+      const loginWindow = document.getElementById('loginWindow');
+
+      // Theme toggle
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.body.classList.add(savedTheme === 'dark' ? 'dark-theme' : 'light-theme');
+      themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+      themeToggle.onclick = () => {
+        const isDark = !document.body.classList.contains('dark-theme');
+        document.body.classList.remove('dark-theme', 'light-theme');
+        document.body.classList.add(isDark ? 'dark-theme' : 'light-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeToggle.textContent = isDark ? '☀️' : '🌙';
+      };
+
+      // Login form handling
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Only accept specific username/password combinations
+        const validCombinations = [
+          { username: 'user1', password: 'user1', isAdmin: false },
+          { username: 'admin', password: 'admin', isAdmin: true }
+        ];
+
+        const validUser = validCombinations.find(user => 
+          user.username === username && user.password === password
+        );
+
+        if (!validUser) {
+          loginWindow.classList.add('shake');
+          setTimeout(() => loginWindow.classList.remove('shake'), 500);
+          return;
+        }
+
+        // Store user data
+        localStorage.setItem('username', username);
+        localStorage.setItem('isAdmin', validUser.isAdmin);
+
+        // Hide login window
+        loginWindow.style.display = 'none';
+
+        // Show login status
+        loginStatus.classList.remove('hidden');
+
+        // Update welcome message
+        welcomeMessage.textContent = `Welcome, ${username}!`;
+
+        // Get and store IP address
+        fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+            ipAddress.textContent = `IP: ${data.ip}`;
+            localStorage.setItem('lastIp', data.ip);
+          });
+
+        // Store login time
+        const loginTime = new Date().toLocaleString();
+        lastLogin.textContent = `Last login: ${loginTime}`;
+        localStorage.setItem('lastLogin', loginTime);
+
+        // Initialize carousel
+        initializeCarousel();
+      });
 
       // Check if user is logged in
       const username = localStorage.getItem('username');
@@ -567,6 +542,7 @@
       const prevBtn = document.querySelector('.nav-prev');
       const nextBtn = document.querySelector('.nav-next');
 
+      // Verify elements exist
       if (!carousel || !dotsContainer || !prevBtn || !nextBtn) {
         console.error('Missing carousel elements:', {
           carousel: !!carousel,
@@ -575,6 +551,20 @@
           nextBtn: !!nextBtn
         });
         return;
+      }
+
+      // Define carousel data
+      const data = [
+        { icon: '🎵', title: 'Audio', key: 'audio' },
+        { icon: '💡', title: 'Lighting', key: 'lighting' },
+        { icon: '🌡️', title: 'Climate', key: 'climate' },
+        { icon: '🔒', title: 'Security', key: 'security' },
+        { icon: '📺', title: 'Entertainment', key: 'entertainment' },
+        { icon: '🔋', title: 'Energy', key: 'energy' },
+        { icon: '💧', title: 'Water', key: 'water' },
+        { icon: '⚙️', title: 'Settings', key: 'settings' }
+      ];
+
       }
 
       // Create cards
@@ -673,48 +663,122 @@
 
     // Wait for DOM to be fully loaded
     document.addEventListener('DOMContentLoaded', () => {
-      // Initialize page
-      initializePage();
-    });
-      const now = new Date();
-      const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
-      
-      if (hoursSinceLogin > 24) {
-        // Session expired
-        localStorage.removeItem('username');
-        localStorage.removeItem('isAdmin');
-        localStorage.removeItem('lastLogin');
-        localStorage.removeItem('lastIp');
+      // Initialize DOM elements
+      const carousel = document.querySelector('.carousel');
+      const dotsContainer = document.querySelector('.dots');
+      const prevBtn = document.querySelector('.nav-prev');
+      const nextBtn = document.querySelector('.nav-next');
+      const themeToggle = document.getElementById('themeToggle');
+      const loginStatus = document.getElementById('loginStatus');
+      const welcomeMessage = loginStatus.querySelector('.welcome-message');
+      const lastLogin = loginStatus.querySelector('.last-login');
+      const ipAddress = loginStatus.querySelector('.ip-address');
+      const loginForm = document.getElementById('loginForm');
+      const loginWindow = document.getElementById('loginWindow');
+
+      // Theme toggle
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.body.classList.add(savedTheme === 'dark' ? 'dark-theme' : 'light-theme');
+      themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+      themeToggle.onclick = () => {
+        const isDark = !document.body.classList.contains('dark-theme');
+        document.body.classList.remove('dark-theme', 'light-theme');
+        document.body.classList.add(isDark ? 'dark-theme' : 'light-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeToggle.textContent = isDark ? '☀️' : '🌙';
+      };
+
+      // Login form handling
+      loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Only accept specific username/password combinations
+        const validCombinations = [
+          { username: 'user1', password: 'user1', isAdmin: false },
+          { username: 'admin', password: 'admin', isAdmin: true }
+        ];
+
+        const validUser = validCombinations.find(user => 
+          user.username === username && user.password === password
+        );
+
+        if (!validUser) {
+          loginWindow.classList.add('shake');
+          setTimeout(() => loginWindow.classList.remove('shake'), 500);
+          return;
+        }
+
+        // Store user data
+        localStorage.setItem('username', username);
+        localStorage.setItem('isAdmin', validUser.isAdmin);
+
+        // Hide login window
+        loginWindow.style.display = 'none';
+
+        // Show login status
+        loginStatus.classList.remove('hidden');
+
+        // Update welcome message
+        welcomeMessage.textContent = `Welcome, ${username}!`;
+
+        // Get and store IP address
+        fetch('https://api.ipify.org?format=json')
+          .then(response => response.json())
+          .then(data => {
+            ipAddress.textContent = `IP: ${data.ip}`;
+            localStorage.setItem('lastIp', data.ip);
+          });
+
+        // Store login time
+        const loginTime = new Date().toLocaleString();
+        lastLogin.textContent = `Last login: ${loginTime}`;
+        localStorage.setItem('lastLogin', loginTime);
+
+        // Initialize carousel
+        initializeCarousel();
+      });
+
+      // Check if user is logged in
+      const username = localStorage.getItem('username');
+      const isAdmin = localStorage.getItem('isAdmin') === 'true';
+      const lastLoginTime = localStorage.getItem('lastLogin');
+
+      // If not logged in, redirect to login page
+      if (!username) {
         window.location.href = '/automation/index.html';
         return;
       }
 
-      // Get current page from URL
-      const currentPage = window.location.pathname.split('/').pop();
-      const category = currentPage.replace('.html', '');
+      // If logged in, hide login window and show status
+      loginWindow.style.display = 'none';
+      loginStatus.classList.remove('hidden');
+      welcomeMessage.textContent = `Welcome, ${username}!`;
 
-      // Update page title
-      document.title = `Home Automation - ${data.find(item => item.key === category)?.title || 'Main'}`;
+      // Check if login is expired (e.g., after 24 hours)
+      if (lastLoginTime) {
+        const loginTime = new Date(lastLoginTime);
+        const now = new Date();
+        const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60);
+        
+        if (hoursSinceLogin > 24) {
+          // Session expired
+          localStorage.removeItem('username');
+          localStorage.removeItem('isAdmin');
+          localStorage.removeItem('lastLogin');
+          localStorage.removeItem('lastIp');
+          window.location.href = '/automation/index.html';
+          return;
+        }
 
-      // Add back button
-      const backButton = document.createElement('button');
-      backButton.textContent = '← Back to Main Page';
-      backButton.style.cssText = `
-        position: fixed;
-        top: 1rem;
-        left: 1rem;
-        background: rgba(255,255,255,0.1);
-        border: none;
-        color: var(--text-color);
-        padding: 0.5rem 1rem;
-        border-radius: 5px;
-        cursor: pointer;
-        z-index: 1000;
-      `;
-      backButton.onclick = () => {
-        window.location.href = '/automation/index.html';
-      };
-      document.body.appendChild(backButton);
+        lastLogin.textContent = `Last login: ${lastLoginTime}`;
+      }
+
+      // Initialize carousel
+      initializeCarousel();
+    });
     };
 
     // Initialize page if we're not on the main page
