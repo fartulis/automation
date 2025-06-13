@@ -840,9 +840,90 @@
       const nextBtn = document.querySelector('.nav-next');
 
       // Create cards
-      const CARDS = 8;
+      const CARDS = data.length;
       const ANGLE = 360 / CARDS;
       let index = 0;
+
+      // Initialize carousel with data
+      data.forEach((item, i) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-icon">${item.icon}</div>
+          <div class="card-title">${item.title}</div>
+        `;
+        carousel.appendChild(card);
+
+        // Create navigation dots
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.addEventListener('click', () => {
+          index = i;
+          render();
+        });
+        dotsContainer.appendChild(dot);
+
+        // Add click handler for card navigation
+        card.addEventListener('click', () => {
+          const category = item.key;
+          const isAdmin = localStorage.getItem('isAdmin') === 'true';
+          
+          if (category === 'settings' && !isAdmin) {
+            alert('Access to Settings is restricted to administrators only.');
+            return;
+          }
+
+          // Navigate to category page
+          window.location.href = `/automation/pages/${category}.html`;
+        });
+      });
+
+      // Render function
+      function render() {
+        const cards = carousel.children;
+        Array.from(cards).forEach((card, i) => {
+          let offset = i - index;
+          if (offset > CARDS / 2) offset -= CARDS;
+          if (offset < -CARDS / 2) offset += CARDS;
+
+          const deg = offset * ANGLE;
+          const z = Math.abs(offset) <= 1 ? 340 : (Math.abs(offset) <= 2 ? 280 : 220);
+          const scale = Math.abs(offset) <= 1 ? 1.1 : (Math.abs(offset) <= 2 ? 0.9 : 0.7);
+          const opacity = Math.abs(offset) <= 2 ? 1 : 0.8;
+
+          card.style.transform = `translate(-50%, -50%) rotateY(${deg}deg) translateZ(${z}px) scale(${scale})`;
+          card.style.opacity = opacity;
+          card.classList.toggle('active', offset === 0);
+        });
+
+        // Update dots
+        const dots = dotsContainer.children;
+        Array.from(dots).forEach((dot, i) => {
+          dot.classList.toggle('active', i === index);
+        });
+      }
+
+      // Navigation handlers
+      prevBtn.onclick = () => {
+        index = (index - 1 + CARDS) % CARDS;
+        render();
+      };
+
+      nextBtn.onclick = () => {
+        index = (index + 1) % CARDS;
+        render();
+      };
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prevBtn.click();
+        if (e.key === 'ArrowRight') nextBtn.click();
+      });
+
+      // Initial render
+      render();
+      setTimeout(() => document.body.classList.remove('loading'), 300);
+    });
 
       // Create cards
       data.forEach((item, i) => {
