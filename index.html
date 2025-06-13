@@ -838,6 +838,8 @@
 
     // Initialize carousel after DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('Initializing carousel...');
+      
       // Add loading state
       document.body.classList.add('loading');
 
@@ -848,7 +850,12 @@
       const nextBtn = document.querySelector('.nav-next');
 
       if (!carousel || !dotsContainer || !prevBtn || !nextBtn) {
-        console.error('Missing carousel elements');
+        console.error('Missing carousel elements:', {
+          carousel: !!carousel,
+          dotsContainer: !!dotsContainer,
+          prevBtn: !!prevBtn,
+          nextBtn: !!nextBtn
+        });
         return;
       }
 
@@ -856,6 +863,74 @@
       const CARDS = data.length;
       const ANGLE = 360 / CARDS;
       let index = 0;
+
+      // Clear existing cards
+      carousel.innerHTML = '';
+      dotsContainer.innerHTML = '';
+
+      // Create cards
+      data.forEach((item, i) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-icon">${item.icon}</div>
+          <div class="card-title">${item.title}</div>
+        `;
+        carousel.appendChild(card);
+
+        // Create navigation dots
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.addEventListener('click', () => {
+          index = i;
+          render();
+        });
+        dotsContainer.appendChild(dot);
+
+        // Add click handler for card navigation
+        card.addEventListener('click', () => {
+          const category = item.key;
+          const isAdmin = localStorage.getItem('isAdmin') === 'true';
+          
+          if (category === 'settings' && !isAdmin) {
+            alert('Access to Settings is restricted to administrators only.');
+            return;
+          }
+
+          // Navigate to category page
+          window.location.href = `/automation/pages/${category}.html`;
+        });
+      });
+
+      // Initial render
+      render();
+      
+      // Remove loading state
+      setTimeout(() => document.body.classList.remove('loading'), 300);
+
+      // Navigation handlers
+      prevBtn.onclick = () => {
+        index = (index - 1 + CARDS) % CARDS;
+        render();
+      };
+
+      nextBtn.onclick = () => {
+        index = (index + 1) % CARDS;
+        render();
+      };
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prevBtn.click();
+        if (e.key === 'ArrowRight') nextBtn.click();
+      });
+
+      // Debug logging
+      console.log('Carousel initialized successfully:', {
+        cards: carousel.children.length,
+        dots: dotsContainer.children.length
+      });
+    });
 
       // Create cards
       data.forEach((item, i) => {
