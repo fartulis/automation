@@ -515,8 +515,8 @@
           return;
         }
 
-        // Navigate to category page (GitHub Pages compatible)
-        window.location.href = `https://fartulis.github.io/automation/pages/${category}.html`;
+        // Navigate to category page using relative path
+        window.location.href = `./pages/${category}.html`;
       });
     });
 
@@ -524,8 +524,8 @@
     const initializePage = () => {
       const username = localStorage.getItem('username');
       if (!username) {
-        // Redirect to login page
-        window.location.href = 'https://fartulis.github.io/automation/index.html';
+        // Redirect to login page using relative path
+        window.location.href = './index.html';
         return;
       }
 
